@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calculadora de Soja | Londrina-PR</title>
+<style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#17212b;background:#f3f5f7}
+*{box-sizing:border-box}body{margin:0;padding:22px}.wrap{max-width:980px;margin:auto}
+header{background:#173d2b;color:white;padding:24px;border-radius:16px 16px 0 0}
+h1{margin:0 0 6px;font-size:25px}header p{margin:0;color:#d6e6dc}
+main{background:white;padding:22px;border-radius:0 0 16px 16px;box-shadow:0 8px 28px #152b1b12}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tab{border:2px solid #dce3e8;border-radius:12px;padding:16px;cursor:pointer;background:white;text-align:left;color:#17212b;font-weight:400}
+.tab b{display:block;font-size:17px;margin-bottom:4px;color:#173d2b}.tab span{font-size:13px;color:#52616b}
+.tab.on{border-color:#1c5638;background:#edf5ef}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.field{border:1px solid #dce3e8;border-radius:10px;padding:12px;position:relative}
+label{display:block;font-size:13px;color:#52616b;margin-bottom:7px}
+input,select{width:100%;padding:11px;border:1px solid #cbd5dc;border-radius:7px;font-size:17px;color:#17212b;background:white}
+input:disabled{background:#f1f3f4;color:#43515a}
+small,.muted{color:#667680;font-size:12px;display:block;margin-top:6px;line-height:1.4}
+.section{font-weight:700;margin:22px 0 12px}
+.badge{position:absolute;top:10px;right:10px;font-size:11px;padding:2px 8px;border-radius:20px;background:#eef1f3;color:#52616b}
+.badge.ok{background:#dff1e4;color:#1c5638}.badge.err{background:#fde8e6;color:#9b2c20}.badge.man{background:#fff3d9;color:#8a5a00}
+.results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}
+.result{background:#edf5ef;border-radius:11px;padding:16px}.result span{display:block;color:#4e6656;font-size:12px;margin-bottom:8px}
+.result strong{font-size:23px;color:#173d2b}.result.main{background:#173d2b}.result.main span{color:#cfe3d6}.result.main strong{color:white;font-size:28px}
+.breakdown{margin-top:18px;border:1px solid #e0e6e9;border-radius:10px;padding:14px}
+.line{display:flex;justify-content:space-between;gap:16px;padding:7px 0;border-bottom:1px solid #edf0f2;font-size:14px}
+.line:last-child{border:0;font-weight:bold}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+button.btn,.link{border:0;border-radius:8px;padding:11px 15px;background:#1c5638;color:white;font-weight:700;text-decoration:none;cursor:pointer;font-size:14px}
+button.btn:disabled{opacity:.6;cursor:wait}
+.link{background:#e9f0eb;color:#1c5638}
+.notice{background:#fff7e7;border:1px solid #f0d9a8;padding:13px;border-radius:9px;margin-top:16px;font-size:13px;line-height:1.5}
+.status{background:#eef4fa;border:1px solid #d5e2ef;padding:12px;border-radius:9px;margin-top:12px;font-size:13px;line-height:1.5}
+.status ul{margin:6px 0 0;padding-left:18px}
+.hide{display:none}
+@media(max-width:650px){body{padding:10px}.grid,.results,.tabs{grid-template-columns:1fr}header,main{padding:17px}}
+</style></head>
+<body><div class="wrap">
+<header><h1>Calculadora de preço da soja</h1><p>Londrina-PR · grão limpo e seco · paridade via Paranaguá</p></header>
+<main>
+
+<div class="section" style="margin-top:0">1. Escolha o tipo de contrato</div>
+<div class="tabs">
+ <button class="tab on" id="tabAtual" onclick="setMode('atual')"><b>Contrato atual</b><span>Preço de hoje: CBOT do 1º vencimento + dólar à vista</span></button>
+ <button class="tab" id="tabFut" onclick="setMode('futuro')"><b>Contrato futuro</b><span>Entrega em mês futuro: CBOT do vencimento + dólar futuro</span></button>
+</div>
+
+<div id="futBox" class="hide">
+ <div class="section">2. Mês de entrega</div>
+ <div class="grid">
+  <div class="field"><label for="month">Mês de entrega / embarque</label><select id="month"></select>
+   <small>O vencimento CBOT é escolhido automaticamente conforme o mês (pode trocar ao lado).</small></div>
+  <div class="field"><label for="contract">Vencimento CBOT usado</label><select id="contract"></select>
+   <small id="contractHint"></small></div>
+ </div>
+</div>
+
+<div class="actions"><button class="btn" id="btnFetch" onclick="fetchAll()">🔄 Buscar cotações online</button>
+<a class="link" href="https://www.noticiasagricolas.com.br/cotacoes/soja" target="_blank" rel="noopener">Ver prêmio Paranaguá (Notícias Agrícolas)</a>
+<a class="link" href="https://www.sistemafaep.org.br/cotacoes/" target="_blank" rel="noopener">FAEP/CMA</a>
+<a class="link" href="https://br.investing.com/commodities/us-soybeans-contracts" target="_blank" rel="noopener">Conferir CBOT (Investing)</a></div>
+<div id="status" class="status">Escolha a tela e clique em <b>Buscar cotações online</b>.</div>
+
+<div class="section"><span id="secQuotes">3</span>. Cotações</div>
+<div class="grid">
+ <div class="field"><span class="badge" id="bCbot">—</span><label for="cbot">CBOT (centavos US$/bushel)</label><input id="cbot" type="number" step="0.25" value="1100"><small id="cbotInfo">Fonte: TradingView (CBOT, pode ter atraso)</small></div>
+ <div class="field"><span class="badge" id="bFx">—</span><label for="fx" id="fxLabel">Dólar à vista (R$/US$)</label><input id="fx" type="number" step="0.0001" value="5.40"><small id="fxInfo">Fonte: AwesomeAPI (comercial)</small></div>
+ <div class="field"><span class="badge man">manual</span><label for="basis">Prêmio Paranaguá (centavos US$/bushel)</label><input id="basis" type="number" step="1" value="-16"><small>Sem fonte gratuita automática — consulte o link acima. O último valor digitado fica salvo neste navegador.</small></div>
+ <div class="field"><label for="quoteDate">Data/hora da consulta</label><input id="quoteDate" type="text" placeholder="Preenchido na busca"></div>
+</div>
+
+<div id="fwdBox" class="hide">
+ <div class="section">Dólar futuro</div>
+ <div class="grid">
+  <div class="field"><label for="dolC">Vencimento do dólar futuro (B3 · DOL)</label><select id="dolC"></select><small id="dolHint">Padrão: contrato que vence logo após o mês de entrega (cobre o pagamento dentro do mês).</small></div>
+  <div class="field"><label for="fxSrc">Fonte do dólar usado no cálculo</label><select id="fxSrc"><option value="b3">B3 · DOL (cotação de mercado)</option><option value="est">Estimativa pelos juros (à vista + Selic − SOFR)</option></select><small id="b3Info">—</small></div>
+ </div>
+ <div class="section" style="font-weight:400;font-size:13px;color:#52616b">Estimativa de conferência (usada automaticamente se a B3 não responder)</div>
+ <div class="grid">
+  <div class="field"><span class="badge" id="bSpot">—</span><label for="spot">Dólar à vista (R$/US$)</label><input id="spot" type="number" step="0.0001" value="5.40"></div>
+  <div class="field"><span class="badge" id="bDi">—</span><label for="di">Juro Brasil (% a.a.)</label><input id="di" type="number" step="0.01" value="15"><small>Fonte: Banco Central (Selic meta, aproximação do DI)</small></div>
+  <div class="field"><span class="badge" id="bUs">—</span><label for="us">Juro EUA (% a.a.)</label><input id="us" type="number" step="0.01" value="4"><small>Fonte: NY Fed (SOFR)</small></div>
+  <div class="field"><label>Dias até o vencimento · <b id="estOut">—</b></label><input id="days" disabled><small>Dólar futuro = à vista × (1+juro BR)^(dias úteis/252) ÷ (1+juro EUA × dias corridos/360). É uma estimativa — o DOL da B3 pode diferir alguns centavos.</small></div>
+ </div>
+</div>
+
+<div class="section">Custos logísticos e ajustes locais</div>
+<div class="grid">
+ <div class="field"><span class="badge man">manual</span><label for="frete">Frete Londrina–Paranaguá (R$/t)</label><input id="frete" type="number" min="0" step="0.01" value="200"><small>Editável — o valor digitado fica salvo neste navegador.</small></div>
+ <div class="field"><span class="badge man">manual</span><label for="fob">FOBings / despesas portuárias (US$/t)</label><input id="fob" type="number" min="0" step="0.01" value="12"><small>Editável — o valor digitado fica salvo neste navegador.</small></div>
+ <div class="field"><span class="badge man">manual</span><label for="port">Despesas adicionais (R$/t)</label><input id="port" type="number" min="0" step="0.01" value="0"></div>
+ <div class="field"><span class="badge man">manual</span><label for="other">Outros descontos (R$/t)</label><input id="other" type="number" step="0.01" value="0"></div>
+ <div class="field"><span class="badge man">manual</span><label for="funrural">Funrural (%)</label><input id="funrural" type="number" step="0.01" value="0"></div>
+</div>
+
+<div class="results">
+ <div class="result main"><span id="scLabel">Preço líquido estimado — contrato atual</span><strong id="sc">R$ 0,00/sc</strong></div>
+ <div class="result"><span>Preço por tonelada</span><strong id="ton">R$ 0,00/t</strong></div>
+ <div class="result"><span>Paridade após FOBings</span><strong id="usd">US$ 0,00/t</strong></div>
+</div>
+<div class="breakdown">
+ <div class="section" style="margin:0 0 8px">Memória de cálculo</div>
+ <div class="line"><span>CBOT + prêmio (US$/bushel)</span><b id="bu">—</b></div>
+ <div class="line"><span>Paridade bruta (US$/t)</span><b id="gross">—</b></div>
+ <div class="line"><span>Menos FOBings</span><b id="fobOut">—</b></div>
+ <div class="line"><span>Conversão pelo dólar (R$/t)</span><b id="brlGross">—</b></div>
+ <div class="line"><span>Menos frete</span><b id="freteOut">—</b></div>
+ <div class="line"><span>Menos despesas adicionais</span><b id="portOut">—</b></div>
+ <div class="line"><span>Menos outros descontos</span><b id="otherOut">—</b></div>
+ <div class="line"><span>Menos Funrural</span><b id="taxOut">—</b></div>
+ <div class="line"><span>Preço líquido estimado</span><b id="netTon">—</b></div>
+</div>
+<div class="notice"><b>O que é buscado online:</b> CBOT e dólar futuro B3 (TradingView), dólar à vista (AwesomeAPI), Selic (Banco Central) e SOFR (NY Fed). O <b>prêmio de Paranaguá</b> não tem fonte gratuita aberta e continua manual. Se alguma busca falhar, o campo fica com o último valor e pode ser editado à mão. Valores são referência — confirme antes de fechar negócio.</div>
+</main></div>
+<script>
+const $=id=>document.getElementById(id);
+const n=id=>Number($(id).value)||0;
+const brl=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const usd=v=>v.toLocaleString('en-US',{style:'currency',currency:'USD'});
+const MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const MCODE='FGHJKMNQUVXZ';           // código de mês dos futuros
+const ZS_MONTHS=[0,2,4,6,7,8,10];     // soja CBOT: jan mar mai jul ago set nov
+// mês de entrega no Brasil -> vencimento CBOT de referência usual [mês, +ano]
+const REF={0:[2,0],1:[2,0],2:[4,0],3:[4,0],4:[6,0],5:[6,0],6:[7,0],7:[8,0],8:[10,0],9:[10,0],10:[0,1],11:[0,1]};
+let mode='atual', b3Fx=null;
+const store={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
+const zsTk=(m,y)=>'CBOT:ZS'+MCODE[m]+y;
+const dolTk=(m,y)=>'BMFBOVESPA:DOL'+MCODE[m]+y;
+const zsName=(m,y)=>MESES[m].slice(0,3)+'/'+y+' (ZS'+MCODE[m]+String(y).slice(-2)+')';
+const dolName=(m,y)=>MESES[m].slice(0,3)+'/'+y+' (DOL'+MCODE[m]+String(y).slice(-2)+')';
+const ym=id=>$(id).value.split('-').map(Number);
+
+function buildMonths(){
+ const now=new Date(),sel=$('month');sel.innerHTML='';
+ for(let i=1;i<=18;i++){const d=new Date(now.getFullYear(),now.getMonth()+i,1);
+  const o=document.createElement('option');o.value=d.getFullYear()+'-'+d.getMonth();o.textContent=MESES[d.getMonth()]+'/'+d.getFullYear();sel.appendChild(o);}
+ const def=[...sel.options].find(o=>o.value.endsWith('-2'));if(def)sel.value=def.value; // março = colheita
+ const zs=$('contract'),dol=$('dolC');zs.innerHTML='';dol.innerHTML='';
+ for(let y=now.getFullYear();y<=now.getFullYear()+2;y++)for(let m=0;m<12;m++){
+  if(new Date(y,m,14)<now)continue;
+  if(ZS_MONTHS.includes(m)){const o=document.createElement('option');o.value=y+'-'+m;o.textContent=zsName(m,y);zs.appendChild(o);}
+  if(new Date(y,m,1)<=new Date(now.getFullYear(),now.getMonth()+20,1)){const o=document.createElement('option');o.value=y+'-'+m;o.textContent=dolName(m,y);dol.appendChild(o);}
+ }
+ autoContracts();
+}
+function autoContracts(){
+ const [y,m]=ym('month');const [rm,add]=REF[m];const v=(y+add)+'-'+rm;
+ if([...$('contract').options].some(o=>o.value===v))$('contract').value=v;
+ $('contractHint').textContent='Referência usual para entrega em '+MESES[m].toLowerCase()+': '+zsName(rm,y+add)+'.';
+ const d=new Date(y,m+1,1),dv=d.getFullYear()+'-'+d.getMonth();
+ if([...$('dolC').options].some(o=>o.value===dv))$('dolC').value=dv;
+ updateDays();
+}
+function deliveryDate(){const [y,m]=ym('month');return new Date(y,m,15)}
+function updateDays(){
+ const t=deliveryDate(),now=new Date();const dc=Math.max(0,Math.round((t-now)/864e5));
+ let du=0;for(let d=new Date(now);d<t;d.setDate(d.getDate()+1)){const w=d.getDay();if(w&&w<6)du++}
+ $('days').value=dc+' corridos · '+du+' úteis';$('days').dataset.dc=dc;$('days').dataset.du=du;
+}
+function estFwd(){const dc=+$('days').dataset.dc||0,du=+$('days').dataset.du||0;
+ return n('spot')*Math.pow(1+n('di')/100,du/252)/(1+n('us')/100*dc/360);}
+function applyFx(){
+ if(mode!=='futuro'){calc();return}
+ const est=estFwd();$('estOut').textContent='estimado R$ '+est.toFixed(4);
+ if($('fxSrc').value==='b3'&&b3Fx){$('fx').value=b3Fx.toFixed(4);$('fxInfo').textContent='B3 · '+$('dolC').selectedOptions[0].textContent+' (via TradingView)';badge('bFx','ok','B3 online');}
+ else{$('fx').value=est.toFixed(4);$('fxInfo').textContent='Estimado: dólar à vista + diferencial de juros até '+$('month').selectedOptions[0].textContent;badge('bFx',$('fxSrc').value==='b3'?'err':'man',$('fxSrc').value==='b3'?'B3 falhou · estimado':'estimado');}
+ calc();
+}
+function setMode(m){
+ mode=m;$('tabAtual').classList.toggle('on',m==='atual');$('tabFut').classList.toggle('on',m==='futuro');
+ $('futBox').classList.toggle('hide',m!=='futuro');$('fwdBox').classList.toggle('hide',m!=='futuro');
+ $('secQuotes').textContent=m==='futuro'?'3':'2';
+ $('fx').disabled=m==='futuro';
+ $('fxLabel').textContent=m==='futuro'?'Dólar futuro (R$/US$)':'Dólar à vista (R$/US$)';
+ if(m==='atual')$('fxInfo').textContent='Fonte: AwesomeAPI (comercial)';
+ setTitle();
+ const b=store.get('basis_'+m);if(b!==null)$('basis').value=b;
+ fetchAll();
+}
+function setTitle(){$('scLabel').textContent='Preço líquido estimado — '+(mode==='futuro'?'contrato futuro ('+$('month').selectedOptions[0].textContent+')':'contrato atual');}
+function badge(id,st,txt){const b=$(id);b.className='badge '+st;b.textContent=txt}
+
+async function getJSON(url,opt={}){
+ const c=new AbortController();const t=setTimeout(()=>c.abort(),12000);
+ try{const r=await fetch(url,{...opt,signal:c.signal});if(!r.ok)throw new Error('HTTP '+r.status);return await r.json();}
+ catch(e){throw new Error(e.name==='AbortError'?'tempo esgotado':e.message)}finally{clearTimeout(t)}
+}
+async function tv(tickers){
+ const j=await getJSON('https://scanner.tradingview.com/futures/scan',{method:'POST',body:JSON.stringify({symbols:{tickers},columns:['close','description','update_time']})});
+ const out={};(j.data||[]).forEach(r=>out[r.s]={price:r.d[0],desc:r.d[1],time:r.d[2]});return out;
+}
+const when=t=>t?new Date(t*1000).toLocaleString('pt-BR'):'sem negócio recente';
+async function fetchCbot(){
+ let tk='CBOT:ZS1!',label='1º vencimento';
+ if(mode==='futuro'){const [y,m]=ym('contract');tk=zsTk(m,y);label=zsName(m,y);}
+ const q=(await tv([tk]))[tk];if(!q||!q.price)throw new Error('vencimento sem cotação');
+ $('cbot').value=(+q.price).toFixed(2);
+ $('cbotInfo').textContent='TradingView · '+q.desc+' · '+when(q.time);
+ return 'CBOT '+label+': '+(+q.price).toFixed(2)+' ¢/bu';
+}
+async function fetchB3(){
+ b3Fx=null;const [y,m]=ym('dolC');const tk=dolTk(m,y);
+ const q=(await tv([tk]))[tk];if(!q||!q.price)throw new Error('vencimento sem cotação');
+ b3Fx=q.price/1000;$('b3Info').textContent='DOL B3: R$ '+b3Fx.toFixed(4)+' · '+(q.time?'último negócio '+when(q.time):'preço de ajuste/referência (sem negócio recente)');
+ return 'Dólar futuro B3 '+dolName(m,y)+': R$ '+b3Fx.toFixed(4);
+}
+async function fetchSpot(){
+ const q=(await getJSON('https://economia.awesomeapi.com.br/json/last/USD-BRL')).USDBRL;const v=+q.bid;
+ $('spot').value=v.toFixed(4);
+ if(mode==='atual'){$('fx').value=v.toFixed(4);$('fxInfo').textContent='AwesomeAPI · comercial (compra) · '+q.create_date;}
+ return 'Dólar à vista: R$ '+v.toFixed(4);
+}
+async function fetchDi(){
+ const j=await getJSON('https://api.bcb.gov.br/dados/serie/bcdata.sgs.432/dados/ultimos/1?formato=json');
+ const v=parseFloat(j[0].valor.replace(',','.'));$('di').value=v;return 'Selic meta: '+v+'% a.a.';
+}
+async function fetchUs(){
+ const r=(await getJSON('https://markets.newyorkfed.org/api/rates/secured/sofr/last/1.json')).refRates[0];
+ $('us').value=r.percentRate;return 'SOFR: '+r.percentRate+'% a.a. ('+r.effectiveDate+')';
+}
+let running=0;
+async function fetchAll(){
+ const my=++running;const btn=$('btnFetch');btn.disabled=true;btn.textContent='Buscando…';
+ $('status').innerHTML='Buscando cotações online…';
+ const jobs=mode==='futuro'
+  ?[['CBOT','bCbot',fetchCbot],['Dólar futuro B3',null,fetchB3],['Dólar à vista','bSpot',fetchSpot],['Juro BR','bDi',fetchDi],['Juro EUA','bUs',fetchUs]]
+  :[['CBOT','bCbot',fetchCbot],['Dólar à vista','bFx',fetchSpot]];
+ jobs.forEach(([,b])=>b&&badge(b,'','buscando'));if(mode==='futuro')badge('bFx','','buscando');
+ const res=await Promise.allSettled(jobs.map(j=>j[2]()));
+ if(my!==running)return;
+ const lines=[];let fails=0;
+ res.forEach((r,i)=>{const [name,b]=jobs[i];
+  if(r.status==='fulfilled'){b&&badge(b,'ok','online');lines.push('✔ '+r.value)}
+  else{fails++;b&&badge(b,'err','falhou');lines.push('✖ '+name+': não foi possível buscar ('+(r.reason&&r.reason.message||'erro')+') — mantido o valor anterior, edite se precisar');
+   if(name==='Dólar futuro B3')$('b3Info').textContent='B3 indisponível agora — usando a estimativa pelos juros.';}});
+ $('quoteDate').value=new Date().toLocaleString('pt-BR');
+ $('status').innerHTML=(fails?'<b>Busca concluída com '+fails+' falha(s).</b>':'<b>Cotações atualizadas.</b>')+' Confira o prêmio de Paranaguá (manual).<ul><li>'+lines.join('</li><li>')+'</li></ul>';
+ btn.disabled=false;btn.textContent='🔄 Buscar cotações online';
+ applyFx();
+}
+function calc(){
+ const bu=(n('cbot')+n('basis'))/100, usdTon=bu*(1000/27.2155), usdAfter=usdTon-n('fob');
+ const brlBefore=usdAfter*n('fx'), base=brlBefore-n('frete')-n('port')-n('other');
+ const tax=Math.max(0,base)*n('funrural')/100, net=base-tax;
+ $('sc').textContent=brl(net*0.06)+'/sc';$('ton').textContent=brl(net)+'/t';$('usd').textContent=usd(usdAfter)+'/t';
+ $('bu').textContent=usd(bu)+'/bu';$('gross').textContent=usd(usdTon)+'/t';$('brlGross').textContent=brl(brlBefore);
+ $('portOut').textContent=brl(n('port'));$('fobOut').textContent=usd(n('fob'))+'/t';$('freteOut').textContent=brl(n('frete'))+'/t';$('otherOut').textContent=brl(n('other'));$('taxOut').textContent=brl(tax);$('netTon').textContent=brl(net);
+}
+$('month').addEventListener('change',()=>{autoContracts();setTitle();fetchAll()});
+$('contract').addEventListener('change',fetchAll);
+$('dolC').addEventListener('change',fetchAll);
+$('fxSrc').addEventListener('change',applyFx);
+$('basis').addEventListener('input',()=>store.set('basis_'+mode,$('basis').value));
+['frete','fob'].forEach(id=>{const v=store.get(id);if(v!==null)$(id).value=v;$(id).addEventListener('input',()=>store.set(id,$(id).value))});
+['spot','di','us'].forEach(id=>$(id).addEventListener('input',applyFx));
+document.querySelectorAll('input:not([disabled])').forEach(el=>el.addEventListener('input',calc));
+buildMonths();
+{const b=store.get('basis_atual');if(b!==null)$('basis').value=b;}
+calc();fetchAll();
+</script></body></html>
