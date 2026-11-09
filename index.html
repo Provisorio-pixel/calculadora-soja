@@ -3,118 +3,195 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Calculadora de Soja | Londrina-PR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{font-family:Arial,Helvetica,sans-serif;color:#17212b;background:#f3f5f7}
-*{box-sizing:border-box}body{margin:0;padding:22px}.wrap{max-width:980px;margin:auto}
-header{background:#173d2b;color:white;padding:24px;border-radius:16px 16px 0 0}
-h1{margin:0 0 6px;font-size:25px}header p{margin:0;color:#d6e6dc}
-main{background:white;padding:22px;border-radius:0 0 16px 16px;box-shadow:0 8px 28px #152b1b12}
+:root{--g9:#0f2e20;--g8:#173d2b;--g7:#1c5638;--g6:#227a4b;--g5:#2f9e5f;--g4:#5cc28a;--g1:#e9f6ee;--ink:#14212b;--mut:#62717b;--line:#e3e9ed;--bg:#f2f5f3;--amber:#b7791f;
+ font-family:Inter,"Segoe UI",system-ui,-apple-system,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+*{box-sizing:border-box}body{margin:0;padding:24px;background:radial-gradient(1200px 500px at 10% -10%,#dcefe3 0,transparent 60%),var(--bg)}
+.wrap{max-width:1120px;margin:auto}
+header{position:relative;overflow:hidden;background:linear-gradient(120deg,var(--g9),var(--g7) 60%,var(--g6));color:#fff;padding:22px 26px;border-radius:20px;display:flex;align-items:center;gap:16px;box-shadow:0 12px 30px #0f2e2030}
+header:after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,#ffffff22,transparent 70%)}
+.logo{width:46px;height:46px;border-radius:14px;background:#ffffff1f;display:grid;place-items:center;font-size:24px;flex:none}
+h1{margin:0;font-size:22px;font-weight:800;letter-spacing:-.3px}header p{margin:3px 0 0;color:#cfe6d8;font-size:13px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;margin-top:20px;align-items:start}
+.card{background:#fff;border-radius:18px;padding:20px;box-shadow:0 1px 2px #0000000a,0 8px 24px #14212b0d;border:1px solid #ffffffaa}
+.card+.card{margin-top:16px}
+.sec{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;margin:0 0 14px}
+.sec .n{width:24px;height:24px;border-radius:8px;background:var(--g1);color:var(--g7);display:grid;place-items:center;font-size:12px;font-weight:800}
+/* tabs */
 .tabs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.tab{border:2px solid #dce3e8;border-radius:12px;padding:16px;cursor:pointer;background:white;text-align:left;color:#17212b;font-weight:400}
-.tab b{display:block;font-size:17px;margin-bottom:4px;color:#173d2b}.tab span{font-size:13px;color:#52616b}
-.tab.on{border-color:#1c5638;background:#edf5ef}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.field{border:1px solid #dce3e8;border-radius:10px;padding:12px;position:relative}
-label{display:block;font-size:13px;color:#52616b;margin-bottom:7px}
-input,select{width:100%;padding:11px;border:1px solid #cbd5dc;border-radius:7px;font-size:17px;color:#17212b;background:white}
-input:disabled{background:#f1f3f4;color:#43515a}
-small,.muted{color:#667680;font-size:12px;display:block;margin-top:6px;line-height:1.4}
-.section{font-weight:700;margin:22px 0 12px}
-.badge{position:absolute;top:10px;right:10px;font-size:11px;padding:2px 8px;border-radius:20px;background:#eef1f3;color:#52616b}
-.badge.ok{background:#dff1e4;color:#1c5638}.badge.err{background:#fde8e6;color:#9b2c20}.badge.man{background:#fff3d9;color:#8a5a00}
-.results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}
-.result{background:#edf5ef;border-radius:11px;padding:16px}.result span{display:block;color:#4e6656;font-size:12px;margin-bottom:8px}
-.result strong{font-size:23px;color:#173d2b}.result.main{background:#173d2b}.result.main span{color:#cfe3d6}.result.main strong{color:white;font-size:28px}
-.breakdown{margin-top:18px;border:1px solid #e0e6e9;border-radius:10px;padding:14px}
-.line{display:flex;justify-content:space-between;gap:16px;padding:7px 0;border-bottom:1px solid #edf0f2;font-size:14px}
-.line:last-child{border:0;font-weight:bold}
-.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
-button.btn,.link{border:0;border-radius:8px;padding:11px 15px;background:#1c5638;color:white;font-weight:700;text-decoration:none;cursor:pointer;font-size:14px}
-button.btn:disabled{opacity:.6;cursor:wait}
-.link{background:#e9f0eb;color:#1c5638}
-.notice{background:#fff7e7;border:1px solid #f0d9a8;padding:13px;border-radius:9px;margin-top:16px;font-size:13px;line-height:1.5}
-.status{background:#eef4fa;border:1px solid #d5e2ef;padding:12px;border-radius:9px;margin-top:12px;font-size:13px;line-height:1.5}
-.status ul{margin:6px 0 0;padding-left:18px}
-.hide{display:none}
-@media(max-width:650px){body{padding:10px}.grid,.results,.tabs{grid-template-columns:1fr}header,main{padding:17px}}
+.tab{position:relative;border:2px solid var(--line);border-radius:16px;padding:16px 16px 16px 58px;cursor:pointer;background:#fff;text-align:left;color:var(--ink);font:inherit;transition:transform .15s,box-shadow .2s,border-color .2s,background .2s}
+.tab:hover{transform:translateY(-2px);box-shadow:0 10px 22px #1c56381f;border-color:var(--g4)}
+.tab:active{transform:translateY(0) scale(.99)}
+.tab .ic{position:absolute;left:14px;top:50%;translate:0 -50%;width:34px;height:34px;border-radius:11px;background:var(--g1);display:grid;place-items:center;font-size:17px;transition:.2s}
+.tab b{display:block;font-size:16px;font-weight:700}.tab span{font-size:12.5px;color:var(--mut)}
+.tab.on{border-color:transparent;background:linear-gradient(135deg,var(--g7),var(--g5));color:#fff;box-shadow:0 12px 26px #1c563845}
+.tab.on span{color:#d9f2e3}.tab.on .ic{background:#ffffff26}
+.tab.on:after{content:"✓";position:absolute;right:14px;top:12px;width:22px;height:22px;border-radius:50%;background:#fff;color:var(--g7);display:grid;place-items:center;font-size:12px;font-weight:800}
+/* fields */
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.field{border:1px solid var(--line);border-radius:14px;padding:12px 14px;position:relative;background:#fbfcfb;transition:border-color .2s,box-shadow .2s,background .2s}
+.field:hover{border-color:#cfdcd4;background:#fff}
+.field:focus-within{border-color:var(--g5);background:#fff;box-shadow:0 0 0 4px #2f9e5f1f}
+label{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--mut);margin-bottom:8px;padding-right:104px}
+input,select{width:100%;padding:10px 12px;border:1px solid #d5dee3;border-radius:10px;font-family:inherit;font-size:17px;font-weight:600;line-height:1.2;font-variant-numeric:tabular-nums;color:var(--ink);background:#fff;outline:0;transition:border-color .2s}
+input:focus,select:focus{border-color:var(--g5)}
+input:disabled{background:#f2f4f5;color:#5b6870}
+input::placeholder{color:#9aa7ae;font-weight:500}
+select{cursor:pointer}
+/* info tooltip */
+.i{width:17px;height:17px;border-radius:50%;border:0;background:#e6ece9;color:var(--g7);font:700 11px/17px Georgia,serif;font-style:italic;cursor:help;padding:0;flex:none;transition:.15s}
+.i:hover,.field.tipOn .i{background:var(--g7);color:#fff}
+.field small{position:absolute;z-index:20;left:10px;right:10px;top:calc(100% - 6px);background:#14212b;color:#eef3f1;font-size:12px;line-height:1.45;padding:10px 12px;border-radius:10px;box-shadow:0 12px 28px #0003;opacity:0;visibility:hidden;transform:translateY(-4px);transition:.18s;pointer-events:none}
+.field small:before{content:"";position:absolute;top:-5px;left:18px;width:10px;height:10px;background:#14212b;transform:rotate(45deg)}
+.field small:empty{display:none}
+.field:hover small,.field.tipOn small{opacity:1;visibility:visible;transform:none}
+/* badges */
+.badge{position:absolute;top:11px;right:12px;font-size:10.5px;font-weight:700;letter-spacing:.2px;padding:3px 9px 3px 8px;border-radius:20px;background:#eef1f3;color:#62717b;display:flex;align-items:center;gap:5px;text-transform:uppercase}
+.badge:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.8}
+.badge.ok{background:#dcf3e5;color:#1a7a45}.badge.ok:before{animation:pulse 1.8s infinite}
+.badge.err{background:#fde5e2;color:#b42318}.badge.man{background:#fff1d6;color:#9a5b00}
+@keyframes pulse{0%{box-shadow:0 0 0 0 #1a7a4566}70%{box-shadow:0 0 0 6px #1a7a4500}100%{box-shadow:0 0 0 0 #1a7a4500}}
+/* buttons */
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:9px;width:100%;border:0;border-radius:14px;padding:14px 18px;font-family:inherit;font-size:15px;font-weight:700;letter-spacing:.2px;color:#fff;cursor:pointer;background:linear-gradient(135deg,var(--g6),var(--g5) 55%,var(--g4));background-size:180% 100%;box-shadow:0 10px 22px #2f9e5f45,inset 0 1px 0 #ffffff40;transition:transform .15s,box-shadow .2s,background-position .4s}
+.btn:hover{transform:translateY(-2px);background-position:100% 0;box-shadow:0 14px 28px #2f9e5f5c,inset 0 1px 0 #ffffff40}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn .ico{font-size:18px;line-height:1;transition:transform .4s}.btn:hover .ico{transform:rotate(180deg)}
+.btn .spin{width:16px;height:16px;border-radius:50%;border:2.5px solid #ffffff66;border-top-color:#fff;display:none}
+.btn:disabled{cursor:wait;opacity:.9}.btn:disabled .spin{display:block;animation:rot .7s linear infinite}.btn:disabled .ico{display:none}
+@keyframes rot{to{transform:rotate(360deg)}}
+.chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:12px;color:var(--mut)}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--g7);font-weight:600;text-decoration:none;transition:.15s}
+.chip:hover{background:var(--g7);color:#fff;border-color:var(--g7);transform:translateY(-1px)}
+/* status */
+.status{position:relative;margin-top:12px;font-size:12.5px;color:#33515f;background:#eef5f9;border:1px solid #dbe8f0;border-radius:12px;padding:9px 12px;cursor:default}
+.status ul{position:absolute;z-index:30;left:0;right:0;top:calc(100% + 6px);margin:0;padding:12px 14px 12px 28px;background:#14212b;color:#e8efeb;border-radius:12px;box-shadow:0 14px 30px #0004;opacity:0;visibility:hidden;transition:.18s;line-height:1.55}
+.status:hover ul{opacity:1;visibility:visible}
+.status .more{float:right;color:var(--g7);font-weight:700}
+.status .when{color:var(--mut)}
+/* results */
+aside{position:sticky;top:16px}
+.hero{background:linear-gradient(150deg,var(--g9),var(--g7) 70%,var(--g6));color:#fff;border-radius:18px;padding:20px;box-shadow:0 16px 34px #0f2e2040;position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;right:-40px;bottom:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,#5cc28a40,transparent 70%)}
+.hero span{display:block;font-size:12px;color:#bfe0cc;font-weight:600}
+.hero>strong{display:block;font-size:36px;font-weight:800;letter-spacing:-1px;margin:6px 0 2px;font-variant-numeric:tabular-nums;transition:transform .25s}
+.hero>strong.bump{animation:bump .45s}
+@keyframes bump{40%{transform:scale(1.06)}}
+.mini{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;position:relative;z-index:1}
+.mini div{min-width:0;background:#ffffff14;border:1px solid #ffffff1f;border-radius:12px;padding:10px}
+.mini span{font-size:11px;color:#bfe0cc;font-weight:600}.mini strong{display:block;font-size:15px;font-weight:700;margin:3px 0 0;font-variant-numeric:tabular-nums}
+details{border:1px solid var(--line);border-radius:14px;background:#fff;margin-top:12px}
+details summary{list-style:none;cursor:pointer;padding:12px 14px;font-weight:700;font-size:13.5px;display:flex;justify-content:space-between;align-items:center;border-radius:14px;transition:background .15s}
+details summary::-webkit-details-marker{display:none}
+details summary:after{content:"›";font-size:18px;color:var(--mut);transition:transform .2s}
+details[open] summary:after{transform:rotate(90deg)}
+details summary:hover{background:#f5f8f6}
+.dbody{padding:0 14px 12px}
+.line{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px dashed #e6ebee;font-size:13px;font-variant-numeric:tabular-nums}
+.line span{color:var(--mut)}.line:last-child{border:0;font-weight:800}.line:last-child span{color:var(--ink)}
+.foot{font-size:12.5px;color:var(--mut);line-height:1.55}
+.hide{display:none!important}
+.sub{font-size:12px;font-weight:600;color:var(--mut);margin:16px 0 10px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}aside{position:static;order:-1}}
+@media(max-width:620px){body{padding:10px}.grid,.tabs{grid-template-columns:1fr}.card{padding:16px}header{padding:18px}.hero>strong{font-size:32px}}
 </style></head>
 <body><div class="wrap">
-<header><h1>Calculadora de preço da soja</h1><p>Londrina-PR · grão limpo e seco · paridade via Paranaguá</p></header>
+<header><div class="logo">🌱</div><div><h1>Calculadora de preço da soja</h1><p>Londrina-PR · grão limpo e seco · paridade via Paranaguá</p></div></header>
+
+<div class="layout">
 <main>
-
-<div class="section" style="margin-top:0">1. Escolha o tipo de contrato</div>
-<div class="tabs">
- <button class="tab on" id="tabAtual" onclick="setMode('atual')"><b>Contrato atual</b><span>Preço de hoje: CBOT do 1º vencimento + dólar à vista</span></button>
- <button class="tab" id="tabFut" onclick="setMode('futuro')"><b>Contrato futuro</b><span>Entrega em mês futuro: CBOT do vencimento + dólar futuro</span></button>
-</div>
-
-<div id="futBox" class="hide">
- <div class="section">2. Mês de entrega</div>
- <div class="grid">
-  <div class="field"><label for="month">Mês de entrega / embarque</label><select id="month"></select>
-   <small>O vencimento CBOT é escolhido automaticamente conforme o mês (pode trocar ao lado).</small></div>
-  <div class="field"><label for="contract">Vencimento CBOT usado</label><select id="contract"></select>
-   <small id="contractHint"></small></div>
+<section class="card">
+ <div class="sec"><span class="n">1</span>Tipo de contrato</div>
+ <div class="tabs">
+  <button class="tab on" id="tabAtual" onclick="setMode('atual')"><span class="ic">📍</span><b>Contrato atual</b><span>Preço de hoje</span></button>
+  <button class="tab" id="tabFut" onclick="setMode('futuro')"><span class="ic">📅</span><b>Contrato futuro</b><span>Entrega em mês futuro</span></button>
  </div>
-</div>
-
-<div class="actions"><button class="btn" id="btnFetch" onclick="fetchAll()">🔄 Buscar cotações online</button>
-<a class="link" href="https://www.noticiasagricolas.com.br/cotacoes/soja/premio-soja-paranagua-pr" target="_blank" rel="noopener">Prêmio Paranaguá (Notícias Agrícolas)</a>
-<a class="link" href="https://www.sistemafaep.org.br/cotacoes/" target="_blank" rel="noopener">FAEP/CMA</a>
-<a class="link" href="https://br.investing.com/commodities/us-soybeans-contracts" target="_blank" rel="noopener">Conferir CBOT (Investing)</a></div>
-<div id="status" class="status">Escolha a tela e clique em <b>Buscar cotações online</b>.</div>
-
-<div class="section"><span id="secQuotes">3</span>. Cotações</div>
-<div class="grid">
- <div class="field"><span class="badge" id="bCbot">—</span><label for="cbot">CBOT (centavos US$/bushel)</label><input id="cbot" type="number" step="0.25" value="1100"><small id="cbotInfo">Fonte: TradingView (CBOT, pode ter atraso)</small></div>
- <div class="field"><span class="badge" id="bFx">—</span><label for="fx" id="fxLabel">Dólar à vista (R$/US$)</label><input id="fx" type="number" step="0.0001" value="5.40"><small id="fxInfo">Fonte: AwesomeAPI (comercial)</small></div>
- <div class="field"><span class="badge" id="bBasis">—</span><label for="basis">Prêmio Paranaguá (centavos US$/bushel)</label><input id="basis" type="number" step="1" value="" placeholder="digite o prêmio"><small id="basisInfo">Fonte: Notícias Agrícolas (atualizado 2x por dia útil). Se o mês não tiver prêmio publicado, digite — o valor fica salvo neste navegador.</small></div>
- <div class="field"><label for="quoteDate">Data/hora da consulta</label><input id="quoteDate" type="text" placeholder="Preenchido na busca"></div>
-</div>
-
-<div id="fwdBox" class="hide">
- <div class="section">Dólar futuro</div>
- <div class="grid">
-  <div class="field"><label for="dolC">Vencimento do dólar futuro (B3 · DOL)</label><select id="dolC"></select><small id="dolHint">Padrão: contrato que vence logo após o mês de entrega (cobre o pagamento dentro do mês).</small></div>
-  <div class="field"><label for="fxSrc">Fonte do dólar usado no cálculo</label><select id="fxSrc"><option value="b3">B3 · DOL (cotação de mercado)</option><option value="est">Estimativa pelos juros (à vista + Selic − SOFR)</option></select><small id="b3Info">—</small></div>
+ <div id="futBox" class="hide" style="margin-top:14px">
+  <div class="grid">
+   <div class="field"><label for="month">Mês de entrega / embarque</label><select id="month"></select>
+    <small>O vencimento CBOT é escolhido automaticamente conforme o mês (pode trocar ao lado). Meses com "prêmio online" têm prêmio publicado.</small></div>
+   <div class="field"><label for="contract">Vencimento CBOT usado</label><select id="contract"></select>
+    <small id="contractHint"></small></div>
+  </div>
  </div>
- <div class="section" style="font-weight:400;font-size:13px;color:#52616b">Estimativa de conferência (usada automaticamente se a B3 não responder)</div>
+</section>
+
+<section class="card">
+ <div class="sec"><span class="n" id="secQuotes">2</span>Cotações</div>
  <div class="grid">
-  <div class="field"><span class="badge" id="bSpot">—</span><label for="spot">Dólar à vista (R$/US$)</label><input id="spot" type="number" step="0.0001" value="5.40"></div>
-  <div class="field"><span class="badge" id="bDi">—</span><label for="di">Juro Brasil (% a.a.)</label><input id="di" type="number" step="0.01" value="15"><small>Fonte: Banco Central (Selic meta, aproximação do DI)</small></div>
-  <div class="field"><span class="badge" id="bUs">—</span><label for="us">Juro EUA (% a.a.)</label><input id="us" type="number" step="0.01" value="4"><small>Fonte: NY Fed (SOFR)</small></div>
-  <div class="field"><label>Dias até o vencimento · <b id="estOut">—</b></label><input id="days" disabled><small>Dólar futuro = à vista × (1+juro BR)^(dias úteis/252) ÷ (1+juro EUA × dias corridos/360). É uma estimativa — o DOL da B3 pode diferir alguns centavos.</small></div>
+  <div class="field"><span class="badge" id="bCbot">—</span><label for="cbot">CBOT (¢ US$/bu)</label><input id="cbot" type="number" step="0.25" value="1100"><small id="cbotInfo">Fonte: TradingView (CBOT, pode ter atraso)</small></div>
+  <div class="field"><span class="badge" id="bFx">—</span><label for="fx" id="fxLabel"><span id="fxLabelTxt">Dólar à vista (R$/US$)</span></label><input id="fx" type="number" step="0.0001" value="5.40"><small id="fxInfo">Fonte: AwesomeAPI (comercial)</small></div>
+  <div class="field"><span class="badge" id="bBasis">—</span><label for="basis">Prêmio Paranaguá (¢ US$/bu)</label><input id="basis" type="number" step="1" value="" placeholder="digite o prêmio"><small id="basisInfo">Fonte: Notícias Agrícolas (atualizado 2x por dia útil).</small></div>
+  <div class="field hide"><label for="quoteDate">Data/hora da consulta</label><input id="quoteDate" type="text"></div>
  </div>
-</div>
 
-<div class="section">Custos logísticos e ajustes locais</div>
-<div class="grid">
- <div class="field"><span class="badge man">manual</span><label for="frete">Frete Londrina–Paranaguá (R$/t)</label><input id="frete" type="number" min="0" step="0.01" value="200"><small>Editável — o valor digitado fica salvo neste navegador.</small></div>
- <div class="field"><span class="badge man">manual</span><label for="fob">FOBings / despesas portuárias (US$/t)</label><input id="fob" type="number" min="0" step="0.01" value="12"><small>Editável — o valor digitado fica salvo neste navegador.</small></div>
- <div class="field"><span class="badge man">manual</span><label for="port">Despesas adicionais (R$/t)</label><input id="port" type="number" min="0" step="0.01" value="0"></div>
- <div class="field"><span class="badge man">manual</span><label for="other">Outros descontos (R$/t)</label><input id="other" type="number" step="0.01" value="0"></div>
- <div class="field"><span class="badge man">manual</span><label for="funrural">Funrural (%)</label><input id="funrural" type="number" step="0.01" value="0"></div>
-</div>
+ <div id="fwdBox" class="hide">
+  <div class="sub">Dólar futuro</div>
+  <div class="grid">
+   <div class="field"><label for="dolC">Vencimento (B3 · DOL)</label><select id="dolC"></select><small id="dolHint">Padrão: contrato que vence logo após o mês de entrega (cobre o pagamento dentro do mês).</small></div>
+   <div class="field"><label for="fxSrc">Fonte do dólar</label><select id="fxSrc"><option value="b3">B3 · DOL (mercado)</option><option value="est">Estimativa pelos juros</option></select><small id="b3Info">—</small></div>
+  </div>
+  <details>
+   <summary>Estimativa pelos juros (conferência) <b id="estOut" style="margin-left:auto;margin-right:10px;color:var(--g7)">—</b></summary>
+   <div class="dbody"><div class="grid">
+    <div class="field"><span class="badge" id="bSpot">—</span><label for="spot">Dólar à vista</label><input id="spot" type="number" step="0.0001" value="5.40"></div>
+    <div class="field"><span class="badge" id="bDi">—</span><label for="di">Juro Brasil (% a.a.)</label><input id="di" type="number" step="0.01" value="15"><small>Fonte: Banco Central (Selic meta, aproximação do DI)</small></div>
+    <div class="field"><span class="badge" id="bUs">—</span><label for="us">Juro EUA (% a.a.)</label><input id="us" type="number" step="0.01" value="4"><small>Fonte: NY Fed (SOFR)</small></div>
+    <div class="field"><label>Dias até o vencimento</label><input id="days" disabled><small>Dólar futuro = à vista × (1+juro BR)^(dias úteis/252) ÷ (1+juro EUA × dias corridos/360). Usada automaticamente se a B3 não responder.</small></div>
+   </div></div>
+  </details>
+ </div>
+</section>
 
-<div class="results">
- <div class="result main"><span id="scLabel">Preço líquido estimado — contrato atual</span><strong id="sc">R$ 0,00/sc</strong></div>
- <div class="result"><span>Preço por tonelada</span><strong id="ton">R$ 0,00/t</strong></div>
- <div class="result"><span>Paridade após FOBings</span><strong id="usd">US$ 0,00/t</strong></div>
+<section class="card">
+ <div class="sec"><span class="n">3</span>Custos logísticos e ajustes</div>
+ <div class="grid">
+  <div class="field"><span class="badge man">manual</span><label for="frete">Frete até Paranaguá (R$/t)</label><input id="frete" type="number" min="0" step="0.01" value="200"><small>Frete Londrina–Paranaguá. Editável — o valor digitado fica salvo neste navegador.</small></div>
+  <div class="field"><span class="badge man">manual</span><label for="fob">FOBings / porto (US$/t)</label><input id="fob" type="number" min="0" step="0.01" value="12"><small>Despesas portuárias. Editável — o valor digitado fica salvo neste navegador.</small></div>
+  <div class="field"><span class="badge man">manual</span><label for="port">Despesas adicionais (R$/t)</label><input id="port" type="number" min="0" step="0.01" value="0"></div>
+  <div class="field"><span class="badge man">manual</span><label for="other">Outros descontos (R$/t)</label><input id="other" type="number" step="0.01" value="0"></div>
+  <div class="field"><span class="badge man">manual</span><label for="funrural">Funrural (%)</label><input id="funrural" type="number" step="0.01" value="0"></div>
+ </div>
+</section>
+</main>
+
+<aside>
+ <div class="hero">
+  <span id="scLabel">Preço líquido estimado — contrato atual</span>
+  <strong id="sc">R$ 0,00/sc</strong>
+  <div class="mini"><div><span>Por tonelada</span><strong id="ton">R$ 0,00/t</strong></div><div><span>Paridade após FOBings</span><strong id="usd">US$ 0,00/t</strong></div></div>
+ </div>
+ <div style="margin-top:14px"><button class="btn" id="btnFetch" onclick="fetchAll()"><span class="spin"></span><span class="ico">⟳</span><span id="btnTxt">Atualizar cotações</span></button></div>
+ <div id="status" class="status">Escolha a tela e clique em <b>Atualizar cotações</b>.</div>
+ <details>
+  <summary>Memória de cálculo</summary>
+  <div class="dbody">
+   <div class="line"><span>CBOT + prêmio (US$/bu)</span><b id="bu">—</b></div>
+   <div class="line"><span>Paridade bruta (US$/t)</span><b id="gross">—</b></div>
+   <div class="line"><span>− FOBings</span><b id="fobOut">—</b></div>
+   <div class="line"><span>Conversão pelo dólar</span><b id="brlGross">—</b></div>
+   <div class="line"><span>− Frete</span><b id="freteOut">—</b></div>
+   <div class="line"><span>− Despesas adicionais</span><b id="portOut">—</b></div>
+   <div class="line"><span>− Outros descontos</span><b id="otherOut">—</b></div>
+   <div class="line"><span>− Funrural</span><b id="taxOut">—</b></div>
+   <div class="line"><span>Preço líquido (R$/t)</span><b id="netTon">—</b></div>
+  </div>
+ </details>
+ <details>
+  <summary>Fontes e como funciona</summary>
+  <div class="dbody foot">
+   <p style="margin:0 0 10px">CBOT e dólar futuro B3 via TradingView, dólar à vista (AwesomeAPI), Selic (Banco Central), SOFR (NY Fed) e prêmio de Paranaguá (Notícias Agrícolas). Valores são referência — confirme antes de fechar negócio.</p>
+   <div class="chips">
+    <a class="chip" href="https://www.noticiasagricolas.com.br/cotacoes/soja/premio-soja-paranagua-pr" target="_blank" rel="noopener">Prêmio Paranaguá ↗</a>
+    <a class="chip" href="https://www.sistemafaep.org.br/cotacoes/" target="_blank" rel="noopener">FAEP/CMA ↗</a>
+    <a class="chip" href="https://br.investing.com/commodities/us-soybeans-contracts" target="_blank" rel="noopener">CBOT Investing ↗</a>
+   </div>
+  </div>
+ </details>
+</aside>
 </div>
-<div class="breakdown">
- <div class="section" style="margin:0 0 8px">Memória de cálculo</div>
- <div class="line"><span>CBOT + prêmio (US$/bushel)</span><b id="bu">—</b></div>
- <div class="line"><span>Paridade bruta (US$/t)</span><b id="gross">—</b></div>
- <div class="line"><span>Menos FOBings</span><b id="fobOut">—</b></div>
- <div class="line"><span>Conversão pelo dólar (R$/t)</span><b id="brlGross">—</b></div>
- <div class="line"><span>Menos frete</span><b id="freteOut">—</b></div>
- <div class="line"><span>Menos despesas adicionais</span><b id="portOut">—</b></div>
- <div class="line"><span>Menos outros descontos</span><b id="otherOut">—</b></div>
- <div class="line"><span>Menos Funrural</span><b id="taxOut">—</b></div>
- <div class="line"><span>Preço líquido estimado</span><b id="netTon">—</b></div>
 </div>
-<div class="notice"><b>O que é buscado online:</b> CBOT e dólar futuro B3 (TradingView), dólar à vista (AwesomeAPI), Selic (Banco Central) e SOFR (NY Fed). O <b>prêmio de Paranaguá</b> não tem fonte gratuita aberta e continua manual. Se alguma busca falhar, o campo fica com o último valor e pode ser editado à mão. Valores são referência — confirme antes de fechar negócio.</div>
-</main></div>
 <script>
 const $=id=>document.getElementById(id);
 const n=id=>Number($(id).value)||0;
@@ -203,9 +280,8 @@ function applyFx(){
 function setMode(m){
  mode=m;$('tabAtual').classList.toggle('on',m==='atual');$('tabFut').classList.toggle('on',m==='futuro');
  $('futBox').classList.toggle('hide',m!=='futuro');$('fwdBox').classList.toggle('hide',m!=='futuro');
- $('secQuotes').textContent=m==='futuro'?'3':'2';
  $('fx').disabled=false;fxManual=false;
- $('fxLabel').textContent=m==='futuro'?'Dólar futuro (R$/US$)':'Dólar à vista (R$/US$)';
+ $('fxLabelTxt').textContent=m==='futuro'?'Dólar futuro (R$/US$)':'Dólar à vista (R$/US$)';
  if(m==='atual')$('fxInfo').textContent='Fonte: AwesomeAPI (comercial)';
  setTitle();
  const b=store.get('basis_'+m);if(b!==null)$('basis').value=b;
@@ -254,7 +330,7 @@ async function fetchUs(){
 }
 let running=0;
 async function fetchAll(){
- const my=++running;fxManual=false;const btn=$('btnFetch');btn.disabled=true;btn.textContent='Buscando…';
+ const my=++running;fxManual=false;const btn=$('btnFetch');btn.disabled=true;$('btnTxt').textContent='Atualizando…';
  $('status').innerHTML='Buscando cotações online…';
  const jobs=mode==='futuro'
   ?[['CBOT','bCbot',fetchCbot],['Prêmio','bBasis',fetchPremio],['Dólar futuro B3',null,fetchB3],['Dólar à vista','bSpot',fetchSpot],['Juro BR','bDi',fetchDi],['Juro EUA','bUs',fetchUs]]
@@ -270,8 +346,8 @@ async function fetchAll(){
   else{fails++;b&&badge(b,'err','falhou');lines.push('✖ '+name+': não foi possível buscar ('+(r.reason&&r.reason.message||'erro')+') — mantido o valor anterior, edite se precisar');
    if(name==='Dólar futuro B3')$('b3Info').textContent='B3 indisponível agora — usando a estimativa pelos juros.';}});
  $('quoteDate').value=new Date().toLocaleString('pt-BR');
- $('status').innerHTML=(fails?'<b>Busca concluída com '+fails+' falha(s).</b>':'<b>Cotações atualizadas.</b>')+'<ul><li>'+lines.join('</li><li>')+'</li></ul>';
- btn.disabled=false;btn.textContent='🔄 Buscar cotações online';
+ $('status').innerHTML=(fails?'⚠️ <b>'+fails+' falha(s) na busca</b>':'✅ <b>Cotações atualizadas</b>')+' <span class="when">· '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+'</span><span class="more">detalhes ⓘ</span><ul><li>'+lines.join('</li><li>')+'</li></ul>';
+ btn.disabled=false;$('btnTxt').textContent='Atualizar cotações';
  applyFx();
 }
 function calc(){
@@ -292,6 +368,14 @@ $('basis').addEventListener('input',()=>{store.set('basis_'+mode,$('basis').valu
 ['frete','fob'].forEach(id=>{const v=store.get(id);if(v!==null)$(id).value=v;$(id).addEventListener('input',()=>store.set(id,$(id).value))});
 ['spot','di','us'].forEach(id=>$(id).addEventListener('input',()=>{fxManual=false;applyFx()}));
 document.querySelectorAll('input:not([disabled])').forEach(el=>el.addEventListener('input',calc));
+// UI: ícone de informação nos campos com explicação
+document.querySelectorAll('.field').forEach(f=>{const sm=f.querySelector('small'),lb=f.querySelector('label');if(!sm||!lb)return;
+ const b=document.createElement('button');b.type='button';b.className='i';b.textContent='i';b.setAttribute('aria-label','Mais informações');
+ b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const on=!f.classList.contains('tipOn');document.querySelectorAll('.field.tipOn').forEach(x=>x.classList.remove('tipOn'));f.classList.toggle('tipOn',on)});
+ lb.appendChild(b);});
+document.addEventListener('click',()=>document.querySelectorAll('.field.tipOn').forEach(x=>x.classList.remove('tipOn')));
+// UI: animação quando o preço muda
+{let last='';new MutationObserver(()=>{const el=$('sc');if(el.textContent!==last){last=el.textContent;el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump')}}).observe($('sc'),{childList:true,characterData:true,subtree:true});}
 buildMonths();
 {const b=store.get('basis_atual');if(b!==null)$('basis').value=b;}
 calc();fetchAll();
