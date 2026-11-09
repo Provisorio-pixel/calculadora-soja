@@ -170,10 +170,17 @@ async function fetchPremio(){
  await loadPremio();
  const ks=Object.keys(premio.meses).sort();const now=new Date();
  let k=mode==='futuro'?pkey(...ym('month')):pkey(now.getFullYear(),now.getMonth());
- if(mode==='atual'&&premio.meses[k]===undefined)k=ks[0];
+ if(!ks.length)throw new Error('nenhum prêmio publicado');
+ const pedido=k;let aprox=false;
+ if(premio.meses[k]===undefined){aprox=true;const ant=ks.filter(x=>x<=k);k=ant.length?ant[ant.length-1]:ks[0];}
  const v=premio.meses[k];
- if(v===undefined){const e=new Error('sem prêmio publicado para '+plabel(k)+' (publicados: '+ks.map(plabel).join(', ')+') — digite o valor');e.manual=true;throw e;}
  $('basis').value=v;
+ if(aprox){
+  $('basisInfo').textContent='Sem prêmio publicado para '+plabel(pedido)+' — usando o mais recente: '+plabel(k)+' '+pfmt(v)+' ¢/bu (fechamento '+premio.fechamento+'). Ajuste se tiver o prêmio do mês.';
+  premio._aprox=true;
+  return 'Prêmio Paranaguá: sem '+plabel(pedido)+', usado o mais recente '+plabel(k)+' '+pfmt(v)+' ¢/bu (aproximação)';
+ }
+ premio._aprox=false;
  $('basisInfo').textContent='Notícias Agrícolas · fechamento '+premio.fechamento+' · '+plabel(k)+': '+pfmt(v)+' ¢/bu. Pode editar se tiver prêmio negociado.';
  return 'Prêmio Paranaguá '+plabel(k)+': '+pfmt(v)+' ¢/bu (fechamento '+premio.fechamento+')';
 }
@@ -256,7 +263,7 @@ async function fetchAll(){
  if(my!==running)return;
  const lines=[];let fails=0;
  res.forEach((r,i)=>{const [name,b]=jobs[i];
-  if(r.status==='fulfilled'){b&&badge(b,'ok','online');lines.push('✔ '+r.value)}
+  if(r.status==='fulfilled'){if(name==='Prêmio'&&premio&&premio._aprox){badge(b,'man','aproximado');lines.push('≈ '+r.value)}else{b&&badge(b,'ok','online');lines.push('✔ '+r.value)}}
   else if(name==='Prêmio'){const sv=store.get('basis_'+mode);$('basis').value=sv!==null?sv:'';badge(b,'man','manual');
    $('basisInfo').textContent='Sem prêmio online para este mês — digite o valor (fica salvo neste navegador).';lines.push('✎ Prêmio: '+(r.reason&&r.reason.message||'indisponível'));}
   else{fails++;b&&badge(b,'err','falhou');lines.push('✖ '+name+': não foi possível buscar ('+(r.reason&&r.reason.message||'erro')+') — mantido o valor anterior, edite se precisar');
