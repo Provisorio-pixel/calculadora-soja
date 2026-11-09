@@ -125,7 +125,7 @@ const MCODE='FGHJKMNQUVXZ';           // código de mês dos futuros
 const ZS_MONTHS=[0,2,4,6,7,8,10];     // soja CBOT: jan mar mai jul ago set nov
 // mês de entrega no Brasil -> vencimento CBOT de referência usual [mês, +ano]
 const REF={0:[2,0],1:[2,0],2:[4,0],3:[4,0],4:[6,0],5:[6,0],6:[7,0],7:[8,0],8:[10,0],9:[10,0],10:[0,1],11:[0,1]};
-let mode='atual', b3Fx=null, premio=null;
+let mode='atual', b3Fx=null, premio=null, fxManual=false;
 const PREMIO_URLS=['https://raw.githubusercontent.com/Provisorio-pixel/calculadora-soja/main/premio.json','premio.json'];
 const pkey=(y,m)=>y+'-'+String(m+1).padStart(2,'0');
 const plabel=k=>{const [y,m]=k.split('-').map(Number);return MESES[m-1].slice(0,3)+'/'+String(y).slice(-2)};
@@ -195,6 +195,7 @@ function estFwd(){const dc=+$('days').dataset.dc||0,du=+$('days').dataset.du||0;
 function applyFx(){
  if(mode!=='futuro'){calc();return}
  const est=estFwd();$('estOut').textContent='estimado R$ '+est.toFixed(4);
+ if(fxManual){calc();return}
  if($('fxSrc').value==='b3'&&b3Fx){$('fx').value=b3Fx.toFixed(4);$('fxInfo').textContent='B3 · '+$('dolC').selectedOptions[0].textContent+' (via TradingView)';badge('bFx','ok','B3 online');}
  else{$('fx').value=est.toFixed(4);$('fxInfo').textContent='Estimado: dólar à vista + diferencial de juros até '+$('month').selectedOptions[0].textContent;badge('bFx',$('fxSrc').value==='b3'?'err':'man',$('fxSrc').value==='b3'?'B3 falhou · estimado':'estimado');}
  calc();
@@ -203,7 +204,7 @@ function setMode(m){
  mode=m;$('tabAtual').classList.toggle('on',m==='atual');$('tabFut').classList.toggle('on',m==='futuro');
  $('futBox').classList.toggle('hide',m!=='futuro');$('fwdBox').classList.toggle('hide',m!=='futuro');
  $('secQuotes').textContent=m==='futuro'?'3':'2';
- $('fx').disabled=m==='futuro';
+ $('fx').disabled=false;fxManual=false;
  $('fxLabel').textContent=m==='futuro'?'Dólar futuro (R$/US$)':'Dólar à vista (R$/US$)';
  if(m==='atual')$('fxInfo').textContent='Fonte: AwesomeAPI (comercial)';
  setTitle();
@@ -253,7 +254,7 @@ async function fetchUs(){
 }
 let running=0;
 async function fetchAll(){
- const my=++running;const btn=$('btnFetch');btn.disabled=true;btn.textContent='Buscando…';
+ const my=++running;fxManual=false;const btn=$('btnFetch');btn.disabled=true;btn.textContent='Buscando…';
  $('status').innerHTML='Buscando cotações online…';
  const jobs=mode==='futuro'
   ?[['CBOT','bCbot',fetchCbot],['Prêmio','bBasis',fetchPremio],['Dólar futuro B3',null,fetchB3],['Dólar à vista','bSpot',fetchSpot],['Juro BR','bDi',fetchDi],['Juro EUA','bUs',fetchUs]]
@@ -285,10 +286,11 @@ function calc(){
 $('month').addEventListener('change',()=>{autoContracts();setTitle();fetchAll()});
 $('contract').addEventListener('change',fetchAll);
 $('dolC').addEventListener('change',fetchAll);
-$('fxSrc').addEventListener('change',applyFx);
+$('fxSrc').addEventListener('change',()=>{fxManual=false;applyFx()});
+$('fx').addEventListener('input',()=>{fxManual=true;badge('bFx','man','editado');$('fxInfo').textContent='Valor digitado por você — clique em Buscar cotações online para voltar ao valor de mercado.'});
 $('basis').addEventListener('input',()=>{store.set('basis_'+mode,$('basis').value);badge('bBasis','man','editado')});
 ['frete','fob'].forEach(id=>{const v=store.get(id);if(v!==null)$(id).value=v;$(id).addEventListener('input',()=>store.set(id,$(id).value))});
-['spot','di','us'].forEach(id=>$(id).addEventListener('input',applyFx));
+['spot','di','us'].forEach(id=>$(id).addEventListener('input',()=>{fxManual=false;applyFx()}));
 document.querySelectorAll('input:not([disabled])').forEach(el=>el.addEventListener('input',calc));
 buildMonths();
 {const b=store.get('basis_atual');if(b!==null)$('basis').value=b;}
