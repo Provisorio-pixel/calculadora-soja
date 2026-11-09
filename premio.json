@@ -1,0 +1,12 @@
+{
+ "fechamento": "06/11/2026",
+ "fonte": "https://www.noticiasagricolas.com.br/cotacoes/soja/premio-soja-paranagua-pr",
+ "unidade": "centavos US$/bushel",
+ "atualizado_em": "2026-11-09T18:20Z",
+ "meses": {
+  "2026-11": 160.0,
+  "2026-12": 170.0,
+  "2027-01": 130.0,
+  "2027-02": 50.0
+ }
+}
