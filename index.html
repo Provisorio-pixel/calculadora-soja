@@ -78,6 +78,7 @@ aside{position:sticky;top:16px}
 .hero>strong{display:block;font-size:36px;font-weight:800;letter-spacing:-1px;margin:6px 0 2px;font-variant-numeric:tabular-nums;transition:transform .25s}
 .hero>strong.bump{animation:bump .45s}
 @keyframes bump{40%{transform:scale(1.06)}}
+.ref{position:relative;z-index:1;font-size:12px;color:#cfe6d8}.ref b{color:#fff}.ref:empty{display:none}
 .mini{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;position:relative;z-index:1}
 .mini div{min-width:0;background:#ffffff14;border:1px solid #ffffff1f;border-radius:12px;padding:10px}
 .mini span{font-size:11px;color:#bfe0cc;font-weight:600}.mini strong{display:block;font-size:15px;font-weight:700;margin:3px 0 0;font-variant-numeric:tabular-nums}
@@ -122,7 +123,7 @@ details summary:hover{background:#f5f8f6}
  <div class="grid">
   <div class="field"><span class="badge" id="bCbot">—</span><label for="cbot">CBOT (¢ US$/bu)</label><input id="cbot" type="number" step="0.25" value="1100"><small id="cbotInfo">Fonte: TradingView (CBOT, pode ter atraso)</small></div>
   <div class="field"><span class="badge" id="bFx">—</span><label for="fx" id="fxLabel"><span id="fxLabelTxt">Dólar à vista (R$/US$)</span></label><input id="fx" type="number" step="0.0001" value="5.40"><small id="fxInfo">Fonte: AwesomeAPI (comercial)</small></div>
-  <div class="field"><span class="badge" id="bBasis">—</span><label for="basis">Prêmio Paranaguá (¢ US$/bu)</label><input id="basis" type="number" step="1" value="" placeholder="digite o prêmio"><small id="basisInfo">Fonte: Notícias Agrícolas (atualizado 2x por dia útil).</small></div>
+  <div class="field"><span class="badge" id="bBasis">—</span><label for="basis">Prêmio Paranaguá (¢ US$/bu)</label><input id="basis" type="number" step="1" value="" placeholder="digite o prêmio"><small id="basisInfo">Fonte: FAEP/CMA (atualizado 2x por dia útil).</small></div>
   <div class="field hide"><label for="quoteDate">Data/hora da consulta</label><input id="quoteDate" type="text"></div>
  </div>
 
@@ -147,7 +148,7 @@ details summary:hover{background:#f5f8f6}
 <section class="card">
  <div class="sec"><span class="n">3</span>Custos logísticos e ajustes</div>
  <div class="grid">
-  <div class="field"><span class="badge man">manual</span><label for="frete">Frete até Paranaguá (R$/t)</label><input id="frete" type="number" min="0" step="0.01" value="200"><small>Frete Londrina–Paranaguá. Editável — o valor digitado fica salvo neste navegador.</small></div>
+  <div class="field"><span class="badge man">manual</span><label for="frete">Frete até Paranaguá (R$/t)</label><input id="frete" type="number" min="0" step="0.01" value="200"><small id="freteInfo">Frete Londrina–Paranaguá. Editável — o valor digitado fica salvo neste navegador.</small></div>
   <div class="field"><span class="badge man">manual</span><label for="fob">FOBings / porto (US$/t)</label><input id="fob" type="number" min="0" step="0.01" value="12"><small>Despesas portuárias. Editável — o valor digitado fica salvo neste navegador.</small></div>
   <div class="field"><span class="badge man">manual</span><label for="port">Despesas adicionais (R$/t)</label><input id="port" type="number" min="0" step="0.01" value="0"></div>
   <div class="field"><span class="badge man">manual</span><label for="other">Outros descontos (R$/t)</label><input id="other" type="number" step="0.01" value="0"></div>
@@ -160,6 +161,7 @@ details summary:hover{background:#f5f8f6}
  <div class="hero">
   <span id="scLabel">Preço líquido estimado — contrato atual</span>
   <strong id="sc">R$ 0,00/sc</strong>
+  <div class="ref" id="deralRef"></div>
   <div class="mini"><div><span>Por tonelada</span><strong id="ton">R$ 0,00/t</strong></div><div><span>Paridade após FOBings</span><strong id="usd">US$ 0,00/t</strong></div></div>
  </div>
  <div style="margin-top:14px"><button class="btn" id="btnFetch" onclick="fetchAll()"><span class="spin"></span><span class="ico">⟳</span><span id="btnTxt">Atualizar cotações</span></button></div>
@@ -181,10 +183,10 @@ details summary:hover{background:#f5f8f6}
  <details>
   <summary>Fontes e como funciona</summary>
   <div class="dbody foot">
-   <p style="margin:0 0 10px">CBOT e dólar futuro B3 via TradingView, dólar à vista (AwesomeAPI), Selic (Banco Central), SOFR (NY Fed) e prêmio de Paranaguá (Notícias Agrícolas). Valores são referência — confirme antes de fechar negócio.</p>
+   <p style="margin:0 0 10px">CBOT e dólar futuro B3 via TradingView, dólar à vista (AwesomeAPI), Selic (Banco Central), SOFR (NY Fed) prêmio de Paranaguá, frete e balcão Londrina (FAEP/CMA e Deral; reserva: Notícias Agrícolas). Valores são referência — confirme antes de fechar negócio.</p>
    <div class="chips">
-    <a class="chip" href="https://www.noticiasagricolas.com.br/cotacoes/soja/premio-soja-paranagua-pr" target="_blank" rel="noopener">Prêmio Paranaguá ↗</a>
     <a class="chip" href="https://www.sistemafaep.org.br/cotacoes/" target="_blank" rel="noopener">FAEP/CMA ↗</a>
+    <a class="chip" href="https://www.noticiasagricolas.com.br/cotacoes/soja/premio-soja-paranagua-pr" target="_blank" rel="noopener">Notícias Agrícolas ↗</a>
     <a class="chip" href="https://br.investing.com/commodities/us-soybeans-contracts" target="_blank" rel="noopener">CBOT Investing ↗</a>
    </div>
   </div>
@@ -236,9 +238,14 @@ function autoContracts(){
  updateDays();
 }
 async function loadPremio(){
- let last;for(const u of PREMIO_URLS){try{premio=await getJSON(u+'?t='+Date.now());markMonths();return}catch(e){last=e}}
+ let last;for(const u of PREMIO_URLS){try{premio=await getJSON(u+'?t='+Date.now());markMonths();showRefs();return}catch(e){last=e}}
  throw new Error('arquivo de prêmio indisponível');
 }
+function showRefs(){
+ const d=premio&&premio.deral_londrina;$('deralRef').innerHTML=d?'Balcão Londrina (Deral '+d.data.slice(0,5)+'): <b>'+brl(d.valor)+'/sc</b>':'';
+ const f=premio&&premio.frete_londrina;$('freteInfo').textContent='Frete Londrina–Paranaguá. Editável — o valor digitado fica salvo neste navegador.'+(f?' Referência CMA/FAEP ('+f.data.slice(0,5)+'): '+f.valor.toLocaleString('pt-BR',{minimumFractionDigits:2})+'.':'');
+}
+function mesNome(){const o=$('month').selectedOptions[0];return o?(o.dataset.base||o.textContent):''}
 function markMonths(){
  [...$('month').options].forEach(o=>{if(!o.dataset.base)o.dataset.base=o.textContent;const [y,m]=o.value.split('-').map(Number);
   o.textContent=o.dataset.base+(premio&&premio.meses[pkey(y,m)]!==undefined?' · prêmio online':'');});
@@ -253,13 +260,13 @@ async function fetchPremio(){
  const v=premio.meses[k];
  $('basis').value=v;
  if(aprox){
-  $('basisInfo').textContent='Sem prêmio publicado para '+plabel(pedido)+' — usando o mais recente: '+plabel(k)+' '+pfmt(v)+' ¢/bu (fechamento '+premio.fechamento+'). Ajuste se tiver o prêmio do mês.';
+  $('basisInfo').textContent=(premio.fonte_nome||'')+': sem prêmio publicado para '+plabel(pedido)+' — usando o mais próximo anterior: '+plabel(k)+' '+pfmt(v)+' ¢/bu (fechamento '+premio.fechamento+'). Ajuste se tiver o prêmio do mês.';
   premio._aprox=true;
-  return 'Prêmio Paranaguá: sem '+plabel(pedido)+', usado o mais recente '+plabel(k)+' '+pfmt(v)+' ¢/bu (aproximação)';
+  return 'Prêmio Paranaguá ('+(premio.fonte_nome||'')+'): sem '+plabel(pedido)+', usado o mais recente '+plabel(k)+' '+pfmt(v)+' ¢/bu (aproximação)';
  }
  premio._aprox=false;
- $('basisInfo').textContent='Notícias Agrícolas · fechamento '+premio.fechamento+' · '+plabel(k)+': '+pfmt(v)+' ¢/bu. Pode editar se tiver prêmio negociado.';
- return 'Prêmio Paranaguá '+plabel(k)+': '+pfmt(v)+' ¢/bu (fechamento '+premio.fechamento+')';
+ $('basisInfo').textContent=(premio.fonte_nome||'Notícias Agrícolas')+' · fechamento '+premio.fechamento+' · '+plabel(k)+': '+pfmt(v)+' ¢/bu. Pode editar se tiver prêmio negociado.';
+ return 'Prêmio Paranaguá ('+(premio.fonte_nome||'')+') '+plabel(k)+': '+pfmt(v)+' ¢/bu (fechamento '+premio.fechamento+')';
 }
 function deliveryDate(){const [y,m]=ym('month');return new Date(y,m,15)}
 function updateDays(){
@@ -274,7 +281,7 @@ function applyFx(){
  const est=estFwd();$('estOut').textContent='estimado R$ '+est.toFixed(4);
  if(fxManual){calc();return}
  if($('fxSrc').value==='b3'&&b3Fx){$('fx').value=b3Fx.toFixed(4);$('fxInfo').textContent='B3 · '+$('dolC').selectedOptions[0].textContent+' (via TradingView)';badge('bFx','ok','B3 online');}
- else{$('fx').value=est.toFixed(4);$('fxInfo').textContent='Estimado: dólar à vista + diferencial de juros até '+$('month').selectedOptions[0].textContent;badge('bFx',$('fxSrc').value==='b3'?'err':'man',$('fxSrc').value==='b3'?'B3 falhou · estimado':'estimado');}
+ else{$('fx').value=est.toFixed(4);$('fxInfo').textContent='Estimado: dólar à vista + diferencial de juros até '+mesNome();badge('bFx',$('fxSrc').value==='b3'?'err':'man',$('fxSrc').value==='b3'?'B3 falhou · estimado':'estimado');}
  calc();
 }
 function setMode(m){
@@ -287,7 +294,7 @@ function setMode(m){
  const b=store.get('basis_'+m);if(b!==null)$('basis').value=b;
  fetchAll();
 }
-function setTitle(){$('scLabel').textContent='Preço líquido estimado — '+(mode==='futuro'?'contrato futuro ('+$('month').selectedOptions[0].textContent+')':'contrato atual');}
+function setTitle(){$('scLabel').textContent='Preço líquido estimado — '+(mode==='futuro'?'contrato futuro ('+mesNome()+')':'contrato atual');}
 function badge(id,st,txt){const b=$(id);b.className='badge '+st;b.textContent=txt}
 
 async function getJSON(url,opt={}){
