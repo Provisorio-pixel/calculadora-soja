@@ -1,25 +1,25 @@
 {
  "fonte_nome": "FAEP/CMA",
  "fonte": "https://www.sistemafaep.org.br/cotacoes/",
- "fechamento": "09/11/2026",
+ "fechamento": "10/11/2026",
  "meses": {
   "2026-11": 135.0,
   "2026-12": 145.0,
-  "2027-01": 40.0,
-  "2027-02": 15.0,
-  "2027-03": -12.0,
-  "2027-05": 4.0,
+  "2027-01": 35.0,
+  "2027-02": 10.0,
+  "2027-03": -23.0,
+  "2027-05": -15.0,
   "2027-06": 13.0
  },
  "frete_londrina": {
   "valor": 170.0,
-  "data": "09/11/2026",
+  "data": "10/11/2026",
   "praca": "Londrina-PR-FOB"
  },
  "deral_londrina": {
-  "valor": 135.0,
-  "data": "10/11/2026"
+  "valor": 138.0,
+  "data": "11/11/2026"
  },
  "unidade": "centavos US$/bushel",
- "atualizado_em": "2026-11-11T01:25Z"
+ "atualizado_em": "2026-11-11T20:08Z"
 }
