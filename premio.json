@@ -1,7 +1,7 @@
 {
  "fonte_nome": "FAEP/CMA",
  "fonte": "https://www.sistemafaep.org.br/cotacoes/",
- "fechamento": "25/11/2026",
+ "fechamento": "26/11/2026",
  "meses": {
   "2026-11": 130.0,
   "2026-12": 118.0,
@@ -11,15 +11,67 @@
   "2027-05": -23.0,
   "2027-06": -8.0
  },
+ "fretes": {
+  "Cascavel-PR-FOB": {
+   "valor": 195.0,
+   "data": "26/11/2026"
+  },
+  "Londrina-PR-FOB": {
+   "valor": 170.0,
+   "data": "26/11/2026"
+  },
+  "Maringá-PR-FOB": {
+   "valor": 170.0,
+   "data": "26/11/2026"
+  },
+  "Pato Branco-PR-FOB": {
+   "valor": 165.0,
+   "data": "26/11/2026"
+  },
+  "Ponta Grossa-PR-FOB": {
+   "valor": 85.0,
+   "data": "26/11/2026"
+  }
+ },
  "frete_londrina": {
   "valor": 170.0,
-  "data": "25/11/2026",
+  "data": "26/11/2026",
   "praca": "Londrina-PR-FOB"
  },
- "deral_londrina": {
-  "valor": 144.0,
-  "data": "26/11/2026"
+ "deral": {
+  "apucarana": {
+   "valor": 144.0,
+   "data": "27/11/2026"
+  },
+  "campo mourão": {
+   "valor": 143.0,
+   "data": "27/11/2026"
+  },
+  "cascavel": {
+   "valor": 143.0,
+   "data": "27/11/2026"
+  },
+  "cornélio procópio": {
+   "valor": 144.0,
+   "data": "27/11/2026"
+  },
+  "curitiba": {
+   "valor": 148.0,
+   "data": "27/11/2026"
+  },
+  "francisco beltrão": {
+   "valor": 145.5,
+   "data": "27/11/2026"
+  },
+  "guarapuava": {
+   "valor": 145.2,
+   "data": "27/11/2026"
+  },
+  "irati": {
+   "valor": 148.0,
+   "data": "27/11/2026"
+  }
  },
  "unidade": "centavos US$/bushel",
- "atualizado_em": "2026-11-27T03:45Z"
+ "atualizado_em": "2026-11-27T11:45Z"
 }
