@@ -48,12 +48,16 @@ def faep():
     out = {'fonte_nome': 'FAEP/CMA', 'fonte': URL, 'fechamento': p['data'], 'meses': meses}
     try:
         f = secao(r'Frete Soja p/ Paranagu[áa]\s*\|\s*CMA')
+        out['fretes'] = {}
         for nome, val in f['linhas']:
+            out['fretes'][nome] = {'valor': num(val), 'data': f['data']}
             if nome.lower().startswith('londrina'): out['frete_londrina'] = {'valor': num(val), 'data': f['data'], 'praca': nome}
     except Exception as e: print('frete:', e)
     try:
         d = secao(r'Soja\s*\|\s*DERAL')
+        out['deral'] = {}
         for nome, val in d['linhas']:
+            out['deral'][nome] = {'valor': num(val), 'data': d['data']}
             if nome.lower() == 'londrina': out['deral_londrina'] = {'valor': num(val), 'data': d['data']}
     except Exception as e: print('deral:', e)
     return out
