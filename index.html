@@ -2,14 +2,14 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Calculadora de Soja | Londrina-PR</title>
+<title>Soja Referência | preço referência da soja</title>
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#173d2b">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Soja Londrina">
+<meta name="apple-mobile-web-app-title" content="Soja Referência">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -101,12 +101,75 @@ details summary:hover{background:#f5f8f6}
 .line span{color:var(--mut)}.line:last-child{border:0;font-weight:800}.line:last-child span{color:var(--ink)}
 .foot{font-size:12.5px;color:var(--mut);line-height:1.55}
 .hide{display:none!important}
+/* telas do app */
+.screen{min-height:calc(100vh - 48px);display:flex;align-items:center;justify-content:center;padding:10px 0}
+.panel{width:100%;max-width:440px;background:#fff;border-radius:22px;padding:26px 24px;box-shadow:0 18px 40px #0f2e2022}
+.panel .brand{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.panel .brand img{width:52px;height:52px;border-radius:14px}
+.panel .brand b{display:block;font-size:19px;font-weight:800}.panel .brand span{font-size:12.5px;color:var(--mut)}
+.panel h2{font-size:18px;margin:0 0 6px}.panel p.lead{margin:0 0 16px;color:var(--mut);font-size:13.5px;line-height:1.5}
+.panel .field{margin-bottom:12px}.panel label{padding-right:0}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:12.5px;color:#41525c;line-height:1.45;margin:6px 0 16px;cursor:pointer}
+.check input{width:18px;height:18px;margin:1px 0 0;flex:none;accent-color:var(--g6)}
+.err{color:#b42318;font-size:12.5px;font-weight:600;min-height:18px;margin:-4px 0 8px}
+.plan{border:2px solid var(--g4);border-radius:16px;padding:16px;background:linear-gradient(135deg,#f3fbf6,#fff);margin-bottom:14px}
+.plan b{font-size:16px}.plan .price{font-size:26px;font-weight:800;color:var(--g7);margin:4px 0}
+.plan ul{margin:8px 0 0;padding-left:18px;font-size:13px;color:#41525c;line-height:1.6}
+.note{font-size:12px;color:#7a5a00;background:#fff6df;border:1px solid #f3dfa7;border-radius:10px;padding:9px 11px;line-height:1.45;margin-bottom:14px}
+.btn.ghost{background:#fff;color:var(--g7);box-shadow:none;border:2px solid var(--line)}
+.btn.ghost:hover{border-color:var(--g5);background:#f5faf7}
+.topbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}
+.pill{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;color:var(--ink);cursor:pointer;transition:.15s;font-family:inherit}
+.pill:hover{border-color:var(--g5);transform:translateY(-1px);box-shadow:0 6px 14px #1c563815}
+.pill small{all:unset;color:var(--mut);font-weight:500;font-size:12px}
+.pill.route{background:linear-gradient(135deg,#e9f6ee,#fff);border-color:#cfe8d9}
+.disc{font-size:11.5px;color:var(--mut);line-height:1.5;margin-top:16px;text-align:center}
+.porto-grp{font-weight:700}
 .sub{font-size:12px;font-weight:600;color:var(--mut);margin:16px 0 10px}
 @media(max-width:900px){.layout{grid-template-columns:1fr}aside{position:static;order:-1}}
 @media(max-width:620px){body{padding:10px}.grid,.tabs{grid-template-columns:1fr}.card{padding:16px}header{padding:18px}.hero>strong{font-size:32px}}
 </style></head>
 <body><div class="wrap">
-<header><div class="logo">🌱</div><div><h1>Calculadora de preço da soja</h1><p>Londrina-PR · grão limpo e seco · paridade via Paranaguá</p></div></header>
+<!-- 1. Entrada pelo CPF -->
+<section class="screen hide" id="scrLogin"><div class="panel">
+ <div class="brand"><img src="icon-192.png" alt=""><div><b>Soja Referência</b><span>Preço referência da soja no interior, via porto</span></div></div>
+ <h2>Entrar com seu CPF</h2>
+ <p class="lead">Você entra uma única vez. Depois o aplicativo abre direto na consulta do preço referência.</p>
+ <div class="field"><label for="cpf">CPF</label><input id="cpf" inputmode="numeric" autocomplete="off" placeholder="000.000.000-00" maxlength="14"></div>
+ <label class="check"><input type="checkbox" id="aceite"><span>Entendo que os valores exibidos são <b>preços de referência</b>, estimados a partir de cotações públicas, e <b>não</b> constituem oferta de compra, recomendação ou garantia de preço.</span></label>
+ <div class="err" id="loginErr"></div>
+ <button class="btn" id="btnLogin" type="button">Continuar</button>
+ <p class="disc">Seu CPF fica salvo apenas neste aparelho.</p>
+</div></section>
+
+<!-- 2. Acesso / assinatura -->
+<section class="screen hide" id="scrPlano"><div class="panel">
+ <div class="brand"><img src="icon-192.png" alt=""><div><b>Soja Referência</b><span id="planoCpf">CPF</span></div></div>
+ <h2 id="planoTitulo">Assinatura anual</h2>
+ <div class="plan"><b>Plano anual</b><div class="price" id="planoPreco">Ativo</div>
+  <ul><li>Preço referência do contrato atual e futuro</li><li>Cotações CBOT, dólar e prêmio atualizados</li><li>Seu porto e sua cidade salvos</li><li>Acesso vinculado ao seu CPF por 12 meses</li></ul></div>
+ <div class="note" id="planoNota"></div>
+ <button class="btn" id="btnPlano" type="button">Continuar</button>
+ <p class="disc"><a href="#" id="trocarCpf" style="color:var(--g7)">Usar outro CPF</a></p>
+</div></section>
+
+<!-- 3. Configuração: porto, estado e cidade -->
+<section class="screen hide" id="scrConfig"><div class="panel">
+ <div class="brand"><img src="icon-192.png" alt=""><div><b>Sua praça</b><span>Fica salvo — altere quando precisar</span></div></div>
+ <div class="field"><label for="cfgPorto">Porto de embarque</label><select id="cfgPorto"></select></div>
+ <div class="field"><label for="cfgUf">Estado</label><select id="cfgUf"><option value="">Carregando estados…</option></select></div>
+ <div class="field"><label for="cfgCidade">Cidade</label><input id="cfgCidade" list="listaCidades" placeholder="Escolha o estado primeiro" autocomplete="off" disabled><datalist id="listaCidades"></datalist></div>
+ <div class="err" id="cfgErr"></div>
+ <button class="btn" id="btnCfg" type="button">Salvar e ver preço referência</button>
+ <button class="btn ghost hide" id="btnCfgCancel" type="button" style="margin-top:10px">Cancelar</button>
+</div></section>
+
+<div id="appMain" class="hide">
+<header><div class="logo">🌱</div><div><h1>Preço referência da soja</h1><p id="hdrSub">grão limpo e seco · paridade de exportação</p></div></header>
+<div class="topbar">
+ <button class="pill route" id="pillRota" type="button">📍 <span id="rotaTxt">—</span> <small>· alterar</small></button>
+ <button class="pill" id="pillConta" type="button">👤 <span id="contaTxt">—</span></button>
+</div>
 
 <div class="layout">
 <main>
@@ -127,11 +190,11 @@ details summary:hover{background:#f5f8f6}
 </section>
 
 <section class="card">
- <div class="sec"><span class="n" id="secQuotes">2</span>Cotações</div>
+ <div class="sec"><span class="n" id="secQuotes">2</span>Cotações de referência</div>
  <div class="grid">
   <div class="field"><span class="badge" id="bCbot">—</span><label for="cbot">CBOT (¢ US$/bu)</label><input id="cbot" type="number" step="0.25" value="1100"><small id="cbotInfo">Fonte: TradingView (CBOT, pode ter atraso)</small></div>
   <div class="field"><span class="badge" id="bFx">—</span><label for="fx" id="fxLabel"><span id="fxLabelTxt">Dólar à vista (R$/US$)</span></label><input id="fx" type="number" step="0.0001" value="5.40"><small id="fxInfo">Fonte: AwesomeAPI (comercial)</small></div>
-  <div class="field"><span class="badge" id="bBasis">—</span><label for="basis">Prêmio Paranaguá (¢ US$/bu)</label><input id="basis" type="number" step="1" value="" placeholder="digite o prêmio"><small id="basisInfo">Fonte: FAEP/CMA (atualizado 2x por dia útil).</small></div>
+  <div class="field"><span class="badge" id="bBasis">—</span><label for="basis" id="basisLabel">Prêmio do porto (¢ US$/bu)</label><input id="basis" type="number" step="1" value="" placeholder="digite o prêmio"><small id="basisInfo">Fonte: FAEP/CMA (atualizado 2x por dia útil).</small></div>
   <div class="field hide"><label for="quoteDate">Data/hora da consulta</label><input id="quoteDate" type="text"></div>
  </div>
 
@@ -156,8 +219,8 @@ details summary:hover{background:#f5f8f6}
 <section class="card">
  <div class="sec"><span class="n">3</span>Custos logísticos e ajustes</div>
  <div class="grid">
-  <div class="field"><span class="badge man">manual</span><label for="frete">Frete até Paranaguá (R$/t)</label><input id="frete" type="number" min="0" step="0.01" value="200"><small id="freteInfo">Frete Londrina–Paranaguá. Editável — o valor digitado fica salvo neste navegador.</small></div>
-  <div class="field"><span class="badge man">manual</span><label for="fob">FOBings / porto (US$/t)</label><input id="fob" type="number" min="0" step="0.01" value="12"><small>Despesas portuárias. Editável — o valor digitado fica salvo neste navegador.</small></div>
+  <div class="field"><span class="badge man">manual</span><label for="frete" id="freteLabel">Frete até o porto (R$/t)</label><input id="frete" type="number" min="0" step="0.01" value="" placeholder="informe o frete"><small id="freteInfo">Frete Londrina–Paranaguá. Editável — o valor digitado fica salvo neste navegador.</small></div>
+  <div class="field"><span class="badge man">manual</span><label for="fob" id="fobLabel">FOBings / porto (US$/t)</label><input id="fob" type="number" min="0" step="0.01" value="12"><small>Despesas portuárias. Editável — o valor digitado fica salvo neste navegador.</small></div>
   <div class="field"><span class="badge man">manual</span><label for="port">Despesas adicionais (R$/t)</label><input id="port" type="number" min="0" step="0.01" value="0"></div>
   <div class="field"><span class="badge man">manual</span><label for="other">Outros descontos (R$/t)</label><input id="other" type="number" step="0.01" value="0"></div>
   <div class="field"><span class="badge man">manual</span><label for="funrural">Funrural (%)</label><input id="funrural" type="number" step="0.01" value="0"></div>
@@ -167,10 +230,10 @@ details summary:hover{background:#f5f8f6}
 
 <aside>
  <div class="hero">
-  <span id="scLabel">Preço líquido estimado — contrato atual</span>
+  <span id="scLabel">Preço referência líquido — contrato atual</span>
   <strong id="sc">R$ 0,00/sc</strong>
   <div class="ref" id="deralRef"></div>
-  <div class="mini"><div><span>Por tonelada</span><strong id="ton">R$ 0,00/t</strong></div><div><span>Paridade após FOBings</span><strong id="usd">US$ 0,00/t</strong></div></div>
+  <div class="mini"><div><span>Referência por tonelada</span><strong id="ton">R$ 0,00/t</strong></div><div><span>Paridade referência (após FOBings)</span><strong id="usd">US$ 0,00/t</strong></div></div>
  </div>
  <div style="margin-top:14px"><button class="btn" id="btnFetch" onclick="fetchAll()"><span class="spin"></span><span class="ico">⟳</span><span id="btnTxt">Atualizar cotações</span></button></div>
  <div id="status" class="status">Escolha a tela e clique em <b>Atualizar cotações</b>.</div>
@@ -185,7 +248,7 @@ details summary:hover{background:#f5f8f6}
    <div class="line"><span>− Despesas adicionais</span><b id="portOut">—</b></div>
    <div class="line"><span>− Outros descontos</span><b id="otherOut">—</b></div>
    <div class="line"><span>− Funrural</span><b id="taxOut">—</b></div>
-   <div class="line"><span>Preço líquido (R$/t)</span><b id="netTon">—</b></div>
+   <div class="line"><span>Preço referência líquido (R$/t)</span><b id="netTon">—</b></div>
   </div>
  </details>
  <details>
@@ -201,6 +264,8 @@ details summary:hover{background:#f5f8f6}
  </details>
 </aside>
 </div>
+<p class="disc">Valores exibidos são <b>preços de referência</b>, estimados a partir de cotações públicas (CBOT, B3, câmbio, prêmio e custos informados). Não constituem oferta, recomendação ou garantia de preço — confirme com o comprador antes de negociar.</p>
+</div>
 </div>
 <script>
 const $=id=>document.getElementById(id);
@@ -212,12 +277,30 @@ const MCODE='FGHJKMNQUVXZ';           // código de mês dos futuros
 const ZS_MONTHS=[0,2,4,6,7,8,10];     // soja CBOT: jan mar mai jul ago set nov
 // mês de entrega no Brasil -> vencimento CBOT de referência usual [mês, +ano]
 const REF={0:[2,0],1:[2,0],2:[4,0],3:[4,0],4:[6,0],5:[6,0],6:[7,0],7:[8,0],8:[10,0],9:[10,0],10:[0,1],11:[0,1]};
+const store={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}},del:k=>{try{localStorage.removeItem(k)}catch(e){}}};
 let mode='atual', b3Fx=null, premio=null, fxManual=false;
-const PREMIO_URLS=['https://raw.githubusercontent.com/Provisorio-pixel/calculadora-soja/main/premio.json','premio.json'];
+// Portos que exportam soja em grão (MAPA, Boletim Mensal de Exportações)
+const PORTOS=[
+ {id:'riogrande',nome:'Rio Grande',uf:'RS',reg:'Sul e Sudeste'},{id:'imbituba',nome:'Imbituba',uf:'SC',reg:'Sul e Sudeste'},
+ {id:'saofrancisco',nome:'São Francisco do Sul',uf:'SC',reg:'Sul e Sudeste'},{id:'paranagua',nome:'Paranaguá',uf:'PR',reg:'Sul e Sudeste'},
+ {id:'santos',nome:'Santos',uf:'SP',reg:'Sul e Sudeste'},{id:'vitoria',nome:'Vitória',uf:'ES',reg:'Sul e Sudeste'},
+ {id:'salvador',nome:'Salvador',uf:'BA',reg:'Norte e Nordeste (Arco Norte)'},{id:'aracaju',nome:'Aracaju',uf:'SE',reg:'Norte e Nordeste (Arco Norte)'},
+ {id:'itaqui',nome:'São Luís (Itaqui)',uf:'MA',reg:'Norte e Nordeste (Arco Norte)'},{id:'barcarena',nome:'Barcarena (Vila do Conde)',uf:'PA',reg:'Norte e Nordeste (Arco Norte)'},
+ {id:'santarem',nome:'Santarém',uf:'PA',reg:'Norte e Nordeste (Arco Norte)'},{id:'santana',nome:'Santana',uf:'AP',reg:'Norte e Nordeste (Arco Norte)'},
+ {id:'itacoatiara',nome:'Itacoatiara',uf:'AM',reg:'Norte e Nordeste (Arco Norte)'}];
+const PORTO_ONLINE='paranagua'; // único porto com prêmio publicado gratuitamente (FAEP/CMA)
+const ACESSO_DIAS=365; // por enquanto sem cobrança: CPF válido libera o plano anual automaticamente
+let cfg=null, acesso=null;
+const jget=k=>{try{return JSON.parse(store.get(k)||'null')}catch(e){return null}};
+const jset=(k,v)=>store.set(k,JSON.stringify(v));
+const porto=()=>PORTOS.find(x=>x.id===(cfg&&cfg.porto))||PORTOS[3];
+const bkey=()=>'basis_'+porto().id+'_'+mode;
+const rotaKey=()=>(cfg?cfg.cidadeId:'x')+'_'+porto().id;
+const norm=t=>(t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+const PREMIO_URLS=['premio.json','https://raw.githubusercontent.com/calculadora-soja/calculadora-soja.github.io/main/premio.json','https://raw.githubusercontent.com/Provisorio-pixel/calculadora-soja/main/premio.json'];
 const pkey=(y,m)=>y+'-'+String(m+1).padStart(2,'0');
 const plabel=k=>{const [y,m]=k.split('-').map(Number);return MESES[m-1].slice(0,3)+'/'+String(y).slice(-2)};
 const pfmt=v=>(v>0?'+':'')+v.toLocaleString('pt-BR');
-const store={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}}};
 const zsTk=(m,y)=>'CBOT:ZS'+MCODE[m]+y;
 const dolTk=(m,y)=>'BMFBOVESPA:DOL'+MCODE[m]+y;
 const zsName=(m,y)=>MESES[m].slice(0,3)+'/'+y+' (ZS'+MCODE[m]+String(y).slice(-2)+')';
@@ -249,9 +332,13 @@ async function loadPremio(){
  let last;for(const u of PREMIO_URLS){try{premio=await getJSON(u+'?t='+Date.now());markMonths();showRefs();return}catch(e){last=e}}
  throw new Error('arquivo de prêmio indisponível');
 }
+function refCidade(obj){if(!obj||!cfg)return null;const c=norm(cfg.cidade);for(const k in obj){if(norm(k).replace(/-pr-fob$/,'')===c)return obj[k]}return null}
 function showRefs(){
- const d=premio&&premio.deral_londrina;$('deralRef').innerHTML=d?'Balcão Londrina (Deral '+d.data.slice(0,5)+'): <b>'+brl(d.valor)+'/sc</b>':'';
- const f=premio&&premio.frete_londrina;$('freteInfo').textContent='Frete Londrina–Paranaguá. Editável — o valor digitado fica salvo neste navegador.'+(f?' Referência CMA/FAEP ('+f.data.slice(0,5)+'): '+f.valor.toLocaleString('pt-BR',{minimumFractionDigits:2})+'.':'');
+ if(!cfg)return;
+ let d=null;if(cfg.uf==='PR'&&premio){d=refCidade(premio.deral);if(!d&&norm(cfg.cidade)==='londrina')d=premio.deral_londrina;}
+ $('deralRef').innerHTML=d?'Balcão '+cfg.cidade+' (Deral '+d.data.slice(0,5)+'): <b>'+brl(d.valor)+'/sc</b>':'';
+ let f=null;if(cfg.uf==='PR'&&porto().id==='paranagua'&&premio){f=refCidade(premio.fretes);if(!f&&norm(cfg.cidade)==='londrina')f=premio.frete_londrina;}
+ $('freteInfo').textContent='Frete '+cfg.cidade+' → '+porto().nome+'. Editável — o valor digitado fica salvo para esta rota.'+(f?' Referência CMA/FAEP ('+f.data.slice(0,5)+'): '+f.valor.toLocaleString('pt-BR',{minimumFractionDigits:2})+'.':'');
 }
 function mesNome(){const o=$('month').selectedOptions[0];return o?(o.dataset.base||o.textContent):''}
 function markMonths(){
@@ -259,6 +346,7 @@ function markMonths(){
   o.textContent=o.dataset.base+(premio&&premio.meses[pkey(y,m)]!==undefined?' · prêmio online':'');});
 }
 async function fetchPremio(){
+ if(porto().id!==PORTO_ONLINE){loadPremio().catch(()=>{});const e=new Error('sem fonte online gratuita de prêmio para '+porto().nome+' — digite o prêmio negociado (fica salvo)');e.manual=true;throw e;}
  await loadPremio();
  const ks=Object.keys(premio.meses).sort();const now=new Date();
  let k=mode==='futuro'?pkey(...ym('month')):pkey(now.getFullYear(),now.getMonth());
@@ -270,11 +358,11 @@ async function fetchPremio(){
  if(aprox){
   $('basisInfo').textContent=(premio.fonte_nome||'')+': sem prêmio publicado para '+plabel(pedido)+' — usando o mais próximo anterior: '+plabel(k)+' '+pfmt(v)+' ¢/bu (fechamento '+premio.fechamento+'). Ajuste se tiver o prêmio do mês.';
   premio._aprox=true;
-  return 'Prêmio Paranaguá ('+(premio.fonte_nome||'')+'): sem '+plabel(pedido)+', usado o mais recente '+plabel(k)+' '+pfmt(v)+' ¢/bu (aproximação)';
+  return 'Prêmio '+porto().nome+' ('+(premio.fonte_nome||'')+'): sem '+plabel(pedido)+', usado o mais recente '+plabel(k)+' '+pfmt(v)+' ¢/bu (aproximação)';
  }
  premio._aprox=false;
  $('basisInfo').textContent=(premio.fonte_nome||'Notícias Agrícolas')+' · fechamento '+premio.fechamento+' · '+plabel(k)+': '+pfmt(v)+' ¢/bu. Pode editar se tiver prêmio negociado.';
- return 'Prêmio Paranaguá ('+(premio.fonte_nome||'')+') '+plabel(k)+': '+pfmt(v)+' ¢/bu (fechamento '+premio.fechamento+')';
+ return 'Prêmio '+porto().nome+' ('+(premio.fonte_nome||'')+') '+plabel(k)+': '+pfmt(v)+' ¢/bu (fechamento '+premio.fechamento+')';
 }
 function deliveryDate(){const [y,m]=ym('month');return new Date(y,m,15)}
 function updateDays(){
@@ -299,10 +387,10 @@ function setMode(m){
  $('fxLabelTxt').textContent=m==='futuro'?'Dólar futuro (R$/US$)':'Dólar à vista (R$/US$)';
  if(m==='atual')$('fxInfo').textContent='Fonte: AwesomeAPI (comercial)';
  setTitle();
- const b=store.get('basis_'+m);if(b!==null)$('basis').value=b;
+ const b=store.get(bkey());$('basis').value=b!==null?b:'';
  fetchAll();
 }
-function setTitle(){$('scLabel').textContent='Preço líquido estimado — '+(mode==='futuro'?'contrato futuro ('+mesNome()+')':'contrato atual');}
+function setTitle(){$('scLabel').textContent='Preço referência líquido — '+(mode==='futuro'?'contrato futuro ('+mesNome()+')':'contrato atual');}
 function badge(id,st,txt){const b=$(id);b.className='badge '+st;b.textContent=txt}
 
 async function getJSON(url,opt={}){
@@ -356,8 +444,8 @@ async function fetchAll(){
  const lines=[];let fails=0;
  res.forEach((r,i)=>{const [name,b]=jobs[i];
   if(r.status==='fulfilled'){if(name==='Prêmio'&&premio&&premio._aprox){badge(b,'man','aproximado');lines.push('≈ '+r.value)}else{b&&badge(b,'ok','online');lines.push('✔ '+r.value)}}
-  else if(name==='Prêmio'){const sv=store.get('basis_'+mode);$('basis').value=sv!==null?sv:'';badge(b,'man','manual');
-   $('basisInfo').textContent='Sem prêmio online para este mês — digite o valor (fica salvo neste navegador).';lines.push('✎ Prêmio: '+(r.reason&&r.reason.message||'indisponível'));}
+  else if(name==='Prêmio'){const sv=store.get(bkey());$('basis').value=sv!==null?sv:'';badge(b,'man','manual');
+   $('basisInfo').textContent=porto().id===PORTO_ONLINE?'Sem prêmio online para este mês — digite o valor (fica salvo neste aparelho).':'Não há fonte gratuita online do prêmio de '+porto().nome+'. Digite o prêmio negociado — fica salvo para este porto.';lines.push('✎ Prêmio: '+(r.reason&&r.reason.message||'indisponível'));}
   else{fails++;b&&badge(b,'err','falhou');lines.push('✖ '+name+': não foi possível buscar ('+(r.reason&&r.reason.message||'erro')+') — mantido o valor anterior, edite se precisar');
    if(name==='Dólar futuro B3')$('b3Info').textContent='B3 indisponível agora — usando a estimativa pelos juros.';}});
  $('quoteDate').value=new Date().toLocaleString('pt-BR');
@@ -367,6 +455,7 @@ async function fetchAll(){
 }
 function calc(){
  if($('basis').value===''){['sc','ton','usd'].forEach(i=>$(i).textContent='Informe o prêmio');return}
+ if($('frete').value===''){['sc','ton','usd'].forEach(i=>$(i).textContent='Informe o frete');return}
  const bu=(n('cbot')+n('basis'))/100, usdTon=bu*(1000/27.2155), usdAfter=usdTon-n('fob');
  const brlBefore=usdAfter*n('fx'), base=brlBefore-n('frete')-n('port')-n('other');
  const tax=Math.max(0,base)*n('funrural')/100, net=base-tax;
@@ -379,8 +468,9 @@ $('contract').addEventListener('change',fetchAll);
 $('dolC').addEventListener('change',fetchAll);
 $('fxSrc').addEventListener('change',()=>{fxManual=false;applyFx()});
 $('fx').addEventListener('input',()=>{fxManual=true;badge('bFx','man','editado');$('fxInfo').textContent='Valor digitado por você — clique em Buscar cotações online para voltar ao valor de mercado.'});
-$('basis').addEventListener('input',()=>{store.set('basis_'+mode,$('basis').value);badge('bBasis','man','editado')});
-['frete','fob'].forEach(id=>{const v=store.get(id);if(v!==null)$(id).value=v;$(id).addEventListener('input',()=>store.set(id,$(id).value))});
+$('basis').addEventListener('input',()=>{store.set(bkey(),$('basis').value);badge('bBasis','man','editado')});
+$('frete').addEventListener('input',()=>store.set('frete_'+rotaKey(),$('frete').value));
+$('fob').addEventListener('input',()=>store.set('fob_'+porto().id,$('fob').value));
 ['spot','di','us'].forEach(id=>$(id).addEventListener('input',()=>{fxManual=false;applyFx()}));
 document.querySelectorAll('input:not([disabled])').forEach(el=>el.addEventListener('input',calc));
 // UI: ícone de informação nos campos com explicação
@@ -391,7 +481,115 @@ document.querySelectorAll('.field').forEach(f=>{const sm=f.querySelector('small'
 document.addEventListener('click',()=>document.querySelectorAll('.field.tipOn').forEach(x=>x.classList.remove('tipOn')));
 // UI: animação quando o preço muda
 {let last='';new MutationObserver(()=>{const el=$('sc');if(el.textContent!==last){last=el.textContent;el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump')}}).observe($('sc'),{childList:true,characterData:true,subtree:true});}
-buildMonths();
-{const b=store.get('basis_atual');if(b!==null)$('basis').value=b;}
-calc();fetchAll();
+
+// ================= APP: CPF, acesso e praça =================
+const soDig=t=>(t||'').replace(/\D/g,'');
+function cpfValido(c){c=soDig(c);if(c.length!==11||/^(\d)\1{10}$/.test(c))return false;
+ for(let t=9;t<11;t++){let s=0;for(let i=0;i<t;i++)s+=+c[i]*(t+1-i);if(((s*10)%11)%10!==+c[t])return false}return true}
+const cpfMask=c=>{c=soDig(c).slice(0,11);return c.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})\.(\d{3})(\d)/,'$1.$2.$3').replace(/\.(\d{3})(\d{1,2})$/,'.$1-$2')};
+const cpfOculto=c=>'***.'+c.slice(3,6)+'.'+c.slice(6,9)+'-**';
+const dataBR=iso=>new Date(iso).toLocaleDateString('pt-BR');
+function show(id){['scrLogin','scrPlano','scrConfig','appMain'].forEach(x=>$(x).classList.toggle('hide',x!==id));window.scrollTo(0,0)}
+function acessoValido(){return acesso&&acesso.validoAte&&new Date(acesso.validoAte)>new Date()}
+let appIniciado=false;
+function rotear(){
+ acesso=jget('acesso');cfg=jget('cfg');
+ if(!acesso||!acesso.cpf){show('scrLogin');return}
+ if(!acessoValido()){abrirPlano();return}
+ if(!cfg||!cfg.cidadeId){abrirConfig(false);return}
+ abrirApp();
+}
+// 1. CPF
+$('cpf').addEventListener('input',e=>{e.target.value=cpfMask(e.target.value);$('loginErr').textContent=''});
+$('btnLogin').addEventListener('click',()=>{
+ const c=soDig($('cpf').value);
+ if(!cpfValido(c)){$('loginErr').textContent='CPF inválido. Confira os números.';return}
+ if(!$('aceite').checked){$('loginErr').textContent='Marque que entende que os valores são preços de referência.';return}
+ const ant=jget('acesso');
+ acesso=(ant&&ant.cpf===c&&ant.plano==='anual')?ant:{cpf:c,plano:'anual',status:'aprovado',criadoEm:new Date().toISOString(),validoAte:new Date(Date.now()+ACESSO_DIAS*864e5).toISOString()};
+ acesso.aceiteReferencia=new Date().toISOString();jset('acesso',acesso);rotear();
+});
+// 2. Acesso
+function abrirPlano(){
+ $('planoCpf').textContent='CPF '+cpfOculto(acesso.cpf);
+ if(acessoValido()){
+  $('planoTitulo').textContent='Seu acesso';$('planoPreco').textContent='Ativo';
+  $('planoNota').textContent='Plano anual ativo para este CPF até '+dataBR(acesso.validoAte)+'.';$('planoNota').style.cssText='color:#1a6b3e;background:#e7f6ec;border-color:#bfe5cc';
+  $('btnPlano').textContent=cfg&&cfg.cidadeId?'Voltar ao preço referência':'Continuar';$('btnPlano').disabled=false;
+ }else{
+  $('planoTitulo').textContent='Acesso expirado';
+  $('planoPreco').textContent='Vencido';
+  $('planoNota').textContent='Seu plano anual venceu em '+dataBR(acesso.validoAte)+'.';
+  $('btnPlano').textContent='Renovar acesso';$('btnPlano').disabled=false;
+ }
+ show('scrPlano');
+}
+$('btnPlano').addEventListener('click',()=>{if(!acessoValido()){acesso.validoAte=new Date(Date.now()+ACESSO_DIAS*864e5).toISOString();acesso.renovadoEm=new Date().toISOString();jset('acesso',acesso)}rotear()});
+$('trocarCpf').addEventListener('click',e=>{e.preventDefault();if(confirmar('Sair deste CPF neste aparelho?')){store.del('acesso');$('cpf').value='';$('aceite').checked=false;rotear()}});
+function confirmar(msg){try{return window.confirm(msg)}catch(e){return true}}
+// 3. Praça: porto, estado e cidade (IBGE)
+let cidadesUF=[];
+function montarPortos(){
+ const sel=$('cfgPorto');sel.innerHTML='';
+ [...new Set(PORTOS.map(x=>x.reg))].forEach(r=>{const g=document.createElement('optgroup');g.label=r;
+  PORTOS.filter(x=>x.reg===r).forEach(x=>{const o=document.createElement('option');o.value=x.id;o.textContent=x.nome+' – '+x.uf+(x.id===PORTO_ONLINE?' · prêmio online':'');g.appendChild(o)});sel.appendChild(g)});
+}
+async function carregarUFs(){
+ if($('cfgUf').options.length>1)return;
+ try{const ufs=await getJSON('https://servicodados.ibge.gov.br/api/v1/localidades/estados?orderBy=nome');
+  $('cfgUf').innerHTML='<option value="">Selecione o estado</option>'+ufs.map(u=>'<option value="'+u.sigla+'">'+u.nome+' ('+u.sigla+')</option>').join('');
+ }catch(e){$('cfgUf').innerHTML='<option value="">Sem conexão — tente de novo</option>';$('cfgErr').textContent='Não foi possível carregar os estados (IBGE). Verifique a internet.'}
+}
+async function carregarCidades(uf,manter){
+ cidadesUF=[];$('listaCidades').innerHTML='';const inp=$('cfgCidade');
+ if(!manter)inp.value='';
+ if(!uf){inp.disabled=true;inp.placeholder='Escolha o estado primeiro';return}
+ inp.disabled=true;inp.placeholder='Carregando cidades…';
+ try{cidadesUF=(await getJSON('https://servicodados.ibge.gov.br/api/v1/localidades/estados/'+uf+'/municipios?orderBy=nome')).map(c=>({id:c.id,nome:c.nome}));
+  $('listaCidades').innerHTML=cidadesUF.map(c=>'<option value="'+c.nome.replace(/"/g,'&quot;')+'">').join('');
+  inp.disabled=false;inp.placeholder='Digite e escolha a cidade ('+cidadesUF.length+' cidades)';
+ }catch(e){inp.placeholder='Sem conexão';$('cfgErr').textContent='Não foi possível carregar as cidades (IBGE). Tente de novo.'}
+}
+$('cfgUf').addEventListener('change',()=>{$('cfgErr').textContent='';carregarCidades($('cfgUf').value,false)});
+$('cfgCidade').addEventListener('input',()=>$('cfgErr').textContent='');
+async function abrirConfig(podeCancelar){
+ montarPortos();$('cfgErr').textContent='';$('btnCfgCancel').classList.toggle('hide',!podeCancelar);
+ show('scrConfig');await carregarUFs();
+ if(cfg){$('cfgPorto').value=cfg.porto;$('cfgUf').value=cfg.uf;await carregarCidades(cfg.uf,true);$('cfgCidade').value=cfg.cidade}
+ else{$('cfgPorto').value=PORTO_ONLINE}
+}
+$('btnCfg').addEventListener('click',()=>{
+ const uf=$('cfgUf').value,nome=$('cfgCidade').value;
+ const c=cidadesUF.find(x=>norm(x.nome)===norm(nome));
+ if(!uf){$('cfgErr').textContent='Escolha o estado.';return}
+ if(!c){$('cfgErr').textContent='Escolha uma cidade da lista do estado selecionado.';return}
+ cfg={porto:$('cfgPorto').value,uf,cidadeId:c.id,cidade:c.nome,salvoEm:new Date().toISOString()};jset('cfg',cfg);
+ // migra o frete e o prêmio antigos (versão anterior: Londrina → Paranaguá)
+ if(norm(c.nome)==='londrina'&&cfg.porto==='paranagua'&&store.get('frete_'+rotaKey())===null&&store.get('frete')!==null)store.set('frete_'+rotaKey(),store.get('frete'));
+ if(cfg.porto==='paranagua')['atual','futuro'].forEach(m=>{if(store.get('basis_paranagua_'+m)===null&&store.get('basis_'+m)!==null)store.set('basis_paranagua_'+m,store.get('basis_'+m))});
+ rotear();
+});
+$('btnCfgCancel').addEventListener('click',()=>abrirApp());
+$('pillRota').addEventListener('click',()=>abrirConfig(true));
+$('pillConta').addEventListener('click',()=>abrirPlano());
+// 4. Tela principal
+function aplicarPraca(){
+ const pt=porto();
+ $('rotaTxt').textContent=cfg.cidade+'/'+cfg.uf+' → '+pt.nome;
+ $('contaTxt').textContent=cpfOculto(acesso.cpf)+' · até '+dataBR(acesso.validoAte);
+ $('hdrSub').textContent=cfg.cidade+'/'+cfg.uf+' · via porto de '+pt.nome+'/'+pt.uf+' · grão limpo e seco';
+ $('basisLabel').firstChild.textContent='Prêmio '+pt.nome+' (¢ US$/bu)';
+ $('freteLabel').firstChild.textContent='Frete até '+pt.nome+' (R$/t)';
+ const fr=store.get('frete_'+rotaKey());$('frete').value=fr!==null?fr:'';
+ const fb=store.get('fob_'+pt.id);$('fob').value=fb!==null?fb:'12';
+ const b=store.get(bkey());$('basis').value=b!==null?b:'';
+ $('basisInfo').textContent=pt.id===PORTO_ONLINE?'Fonte: FAEP/CMA (atualizado 2x por dia útil).':'Não há fonte gratuita online do prêmio de '+pt.nome+'. Digite o prêmio negociado — fica salvo para este porto.';
+ showRefs();
+}
+function abrirApp(){
+ show('appMain');aplicarPraca();
+ if(!appIniciado){appIniciado=true;buildMonths();calc();}
+ fetchAll();
+}
+rotear();
 </script></body></html>
